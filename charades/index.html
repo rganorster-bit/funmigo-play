@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FUNMIGO - Charades</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #e6382f 0%, #b3131c 52%, #5b050b 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      opacity: 0.95;
+    }
+
+    .phrase-card {
+      min-height: 260px;
+      background: white;
+      color: #111;
+      border: 5px solid black;
+      border-radius: 30px;
+      padding: 24px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .phrase-card.shuffle {
+      animation: bounce 0.15s infinite alternate;
+    }
+
+    .category {
+      display: inline-block;
+      background: #ffc400;
+      color: #111;
+      border: 3px solid #111;
+      border-radius: 999px;
+      padding: 8px 16px;
+      margin-bottom: 22px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .phrase {
+      font-size: clamp(30px, 9vw, 48px);
+      line-height: 1.08;
+      font-weight: 900;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      width: 100%;
+      background: #ffc400;
+      color: #111;
+      border: 4px solid black;
+      border-radius: 18px;
+      padding: 18px 24px;
+      font-size: 23px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 black;
+    }
+
+    button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 700;
+      opacity: 0.92;
+    }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.75;
+    }
+
+    @keyframes bounce {
+      from {
+        transform: scale(1) rotate(-1deg);
+      }
+
+      to {
+        transform: scale(1.025) rotate(1deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <div class="title">🎭 CHARADES CHALLENGE</div>
+
+    <div class="subtitle">
+      Act it out. No talking allowed!
+    </div>
+
+    <section id="phraseCard" class="phrase-card">
+      <div id="category" class="category">ACTION</div>
+      <div id="phrase" class="phrase">EARTHQUAKE</div>
+    </section>
+
+    <button id="newPhraseButton" type="button">
+      GET A PHRASE
+    </button>
+
+    <div class="hint">
+      Use only movements and facial expressions.
+    </div>
+
+    <div class="footer">
+      © 2026 FUNMIGO. ALL RIGHTS RESERVED.
+    </div>
+  </main>
+
+  <script>
+    const challenges = [
+      { category: "ACTION", phrase: "Earthquake" },
+      { category: "ACTION", phrase: "Walking on the Moon" },
+      { category: "ACTION", phrase: "Stuck in an Elevator" },
+      { category: "ACTION", phrase: "Riding a Roller Coaster" },
+      { category: "ACTION", phrase: "Walking Against Strong Wind" },
+      { category: "ACTION", phrase: "Stepping on a Lego" },
+      { category: "ACTION", phrase: "Chased by a Bee" },
+      { category: "ACTION", phrase: "Trying to Catch a Fly" },
+      { category: "ACTION", phrase: "Opening a Stuck Jar" },
+      { category: "ACTION", phrase: "Walking on Hot Sand" },
+      { category: "ACTION", phrase: "Getting Caught in the Rain" },
+      { category: "ACTION", phrase: "Swimming with Sharks" },
+      { category: "ACTION", phrase: "Climbing a Mountain" },
+      { category: "ACTION", phrase: "Walking on a Tightrope" },
+      { category: "ACTION", phrase: "Running from a Dinosaur" },
+      { category: "ACTION", phrase: "Building a Snowman" },
+      { category: "ACTION", phrase: "Winning the Lottery" },
+      { category: "ACTION", phrase: "Losing Your Phone" },
+      { category: "ACTION", phrase: "Taking a Selfie" },
+      { category: "ACTION", phrase: "Dancing at a Wedding" },
+      { category: "ACTION", phrase: "Falling Asleep in Class" },
+      { category: "ACTION", phrase: "Burning Your Tongue" },
+      { category: "ACTION", phrase: "Walking Through a Spider Web" },
+      { category: "ACTION", phrase: "Trying to Stay Awake" },
+      { category: "ACTION", phrase: "Being Pulled by a Huge Dog" },
+      { category: "ACTION", phrase: "Trapped in Quicksand" },
+      { category: "ACTION", phrase: "A Surprise Birthday Party" },
+      { category: "ACTION", phrase: "Singing in the Shower" },
+      { category: "ACTION", phrase: "Taking a Cold Shower" },
+      { category: "ACTION", phrase: "Trying to Sneak Out" },
+
+      { category: "IDIOM", phrase: "A Piece of Cake" },
+      { category: "IDIOM", phrase: "Break the Ice" },
+      { category: "IDIOM", phrase: "Two Heads Are Better Than One" },
+      { category: "IDIOM", phrase: "Better Late Than Never" },
+      { category: "IDIOM", phrase: "The Early Bird Gets the Worm" },
+      { category: "IDIOM", phrase: "When Pigs Fly" },
+      { category: "IDIOM", phrase: "Hold Your Horses" },
+      { category: "IDIOM", phrase: "Let the Cat Out of the Bag" },
+      { category: "IDIOM", phrase: "Hit the Nail on the Head" },
+      { category: "IDIOM", phrase: "Bite the Bullet" },
+      { category: "IDIOM", phrase: "Under the Weather" },
+      { category: "IDIOM", phrase: "Spill the Beans" },
+      { category: "IDIOM", phrase: "Cost an Arm and a Leg" },
+      { category: "IDIOM", phrase: "Cry Over Spilled Milk" },
+      { category: "IDIOM", phrase: "The Ball Is in Your Court" },
+      { category: "IDIOM", phrase: "Add Fuel to the Fire" },
+      { category: "IDIOM", phrase: "Barking Up the Wrong Tree" },
+      { category: "IDIOM", phrase: "Walk on Eggshells" },
+      { category: "IDIOM", phrase: "Go the Extra Mile" },
+      { category: "IDIOM", phrase: "Miss the Boat" },
+      { category: "IDIOM", phrase: "Jump on the Bandwagon" },
+      { category: "IDIOM", phrase: "Keep Your Eye on the Ball" },
+      { category: "IDIOM", phrase: "Put All Your Eggs in One Basket" },
+      { category: "IDIOM", phrase: "Actions Speak Louder Than Words" },
+      { category: "IDIOM", phrase: "Practice Makes Perfect" },
+      { category: "IDIOM", phrase: "Haste Makes Waste" },
+      { category: "IDIOM", phrase: "Too Many Cooks Spoil the Broth" },
+      { category: "IDIOM", phrase: "Don't Judge a Book by Its Cover" },
+      { category: "IDIOM", phrase: "The Grass Is Always Greener" },
+      { category: "IDIOM", phrase: "A Picture Is Worth a Thousand Words" }
+    ];
+
+    const phraseDisplay = document.getElementById("phrase");
+    const categoryDisplay = document.getElementById("category");
+    const phraseCard = document.getElementById("phraseCard");
+    const newPhraseButton = document.getElementById("newPhraseButton");
+
+    let isShuffling = false;
+    let previousIndex = -1;
+
+    function getRandomIndex() {
+      let selectedIndex;
+
+      do {
+        selectedIndex = Math.floor(Math.random() * challenges.length);
+      } while (selectedIndex === previousIndex && challenges.length > 1);
+
+      return selectedIndex;
+    }
+
+    function displayChallenge(index) {
+      phraseDisplay.textContent = challenges[index].phrase;
+      categoryDisplay.textContent = challenges[index].category;
+    }
+
+    function showNewPhrase() {
+      if (isShuffling) {
+        return;
+      }
+
+      isShuffling = true;
+      newPhraseButton.disabled = true;
+      newPhraseButton.textContent = "CHOOSING...";
+      phraseCard.classList.add("shuffle");
+
+      let spins = 18;
+
+      const shuffleInterval = setInterval(() => {
+        const temporaryIndex =
+          Math.floor(Math.random() * challenges.length);
+
+        displayChallenge(temporaryIndex);
+        spins -= 1;
+
+        if (spins <= 0) {
+          clearInterval(shuffleInterval);
+
+          const finalIndex = getRandomIndex();
+          previousIndex = finalIndex;
+          displayChallenge(finalIndex);
+
+          phraseCard.classList.remove("shuffle");
+          newPhraseButton.disabled = false;
+          newPhraseButton.textContent = "NEW PHRASE";
+          isShuffling = false;
+
+          navigator.vibrate?.(80);
+        }
+      }, 60);
+    }
+
+    newPhraseButton.addEventListener("click", showNewPhrase);
+
+    const firstIndex = getRandomIndex();
+    previousIndex = firstIndex;
+    displayChallenge(firstIndex);
+  </script>
+</body>
+</html>
