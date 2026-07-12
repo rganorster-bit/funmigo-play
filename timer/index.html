@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FUNMIGO Timer</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, #2431b8 0%, #101878 48%, #070b35 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .brand {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 6px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .brand span {
+      color: #ffc400;
+    }
+
+    .subtitle {
+      margin: 0 0 25px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .timer-card {
+      background: #ffffff;
+      color: #111;
+      border: 5px solid #000;
+      border-radius: 28px;
+      padding: 26px 18px;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .timer {
+      font-size: clamp(76px, 22vw, 120px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -6px;
+      margin: 8px 0 24px;
+    }
+
+    .presets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      border: 3px solid #000;
+      border-radius: 14px;
+      padding: 14px 8px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #000;
+    }
+
+    button:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+
+    .preset {
+      background: #ffc400;
+    }
+
+    .main-buttons {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 10px;
+    }
+
+    #startPause {
+      background: #22c55e;
+      color: #07120b;
+    }
+
+    #reset {
+      background: #ef4444;
+      color: white;
+    }
+
+    .message {
+      min-height: 27px;
+      margin-top: 18px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #ef4444;
+    }
+
+    footer {
+      margin-top: 22px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="brand">FUN<span>MIGO</span></div>
+    <p class="subtitle">CHOOSE A TIME. START THE FUN!</p>
+
+    <section class="timer-card">
+      <div id="timer" class="timer">00:45</div>
+
+      <div class="presets">
+        <button class="preset" data-seconds="30">30 SEC</button>
+        <button class="preset" data-seconds="45">45 SEC</button>
+        <button class="preset" data-seconds="60">60 SEC</button>
+      </div>
+
+      <div class="main-buttons">
+        <button id="startPause">START</button>
+        <button id="reset">RESET</button>
+      </div>
+
+      <div id="message" class="message"></div>
+    </section>
+
+    <footer>© 2026 FUNMIGO. ALL RIGHTS RESERVED.</footer>
+  </main>
+
+  <script>
+    let selectedSeconds = 45;
+    let remainingSeconds = selectedSeconds;
+    let intervalId = null;
+    let isRunning = false;
+
+    const timerDisplay = document.getElementById("timer");
+    const startPauseButton = document.getElementById("startPause");
+    const resetButton = document.getElementById("reset");
+    const message = document.getElementById("message");
+    const presetButtons = document.querySelectorAll(".preset");
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+
+      return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function updateDisplay() {
+      timerDisplay.textContent = formatTime(remainingSeconds);
+    }
+
+    function stopTimer() {
+      clearInterval(intervalId);
+      intervalId = null;
+      isRunning = false;
+      startPauseButton.textContent = "START";
+    }
+
+    function startTimer() {
+      if (remainingSeconds <= 0) {
+        remainingSeconds = selectedSeconds;
+        message.textContent = "";
+      }
+
+      isRunning = true;
+      startPauseButton.textContent = "PAUSE";
+
+      intervalId = setInterval(() => {
+        remainingSeconds -= 1;
+        updateDisplay();
+
+        if (remainingSeconds <= 0) {
+          remainingSeconds = 0;
+          updateDisplay();
+          stopTimer();
+          message.textContent = "TIME'S UP!";
+          navigator.vibrate?.([300, 150, 300]);
+        }
+      }, 1000);
+    }
+
+    startPauseButton.addEventListener("click", () => {
+      message.textContent = "";
+
+      if (isRunning) {
+        stopTimer();
+      } else {
+        startTimer();
+      }
+    });
+
+    resetButton.addEventListener("click", () => {
+      stopTimer();
+      remainingSeconds = selectedSeconds;
+      message.textContent = "";
+      updateDisplay();
+    });
+
+    presetButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        stopTimer();
+        selectedSeconds = Number(button.dataset.seconds);
+        remainingSeconds = selectedSeconds;
+        message.textContent = "";
+        updateDisplay();
+      });
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>
