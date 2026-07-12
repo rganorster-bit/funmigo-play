@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FUNMIGO - Random Song Word</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #d92525 0%, #a70f18 55%, #57030a 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    .title {
+      font-size: 23px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 26px;
+      opacity: 0.95;
+    }
+
+    .word-card {
+      background: white;
+      color: #111;
+      border: 5px solid black;
+      border-radius: 30px;
+      min-height: 220px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .word-card.shuffle {
+      animation: bounce 0.15s infinite alternate;
+    }
+
+    .word {
+      font-size: clamp(50px, 15vw, 82px);
+      line-height: 1;
+      font-weight: 900;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      width: 100%;
+      background: #ffc400;
+      color: #111;
+      border: 4px solid black;
+      border-radius: 18px;
+      padding: 18px 24px;
+      font-size: 23px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 black;
+    }
+
+    button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.75;
+    }
+
+    @keyframes bounce {
+      from {
+        transform: scale(1) rotate(-1deg);
+      }
+
+      to {
+        transform: scale(1.035) rotate(1deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <div class="title">🎵 RANDOM SONG WORD</div>
+
+    <div class="subtitle">
+      Find as many songs as you can!
+    </div>
+
+    <section id="wordCard" class="word-card">
+      <div id="word" class="word">LOVE</div>
+    </section>
+
+    <button id="newWordButton" type="button">
+      GET A WORD
+    </button>
+
+    <div class="hint">
+      Every song must include the chosen word.
+    </div>
+
+    <div class="footer">
+      © 2026 FUNMIGO. ALL RIGHTS RESERVED.
+    </div>
+  </main>
+
+  <script>
+    const words = [
+      "Love",
+      "Baby",
+      "Night",
+      "Day",
+      "Heart",
+      "Sun",
+      "Moon",
+      "Dream",
+      "Dance",
+      "Happy",
+      "Home",
+      "Girl",
+      "Boy",
+      "Man",
+      "Woman",
+      "Life",
+      "Time",
+      "World",
+      "Fire",
+      "Light",
+      "Dark",
+      "Rain",
+      "Sky",
+      "Blue",
+      "Red",
+      "Summer",
+      "Winter",
+      "Morning",
+      "Tonight",
+      "Forever",
+      "Together",
+      "Alone",
+      "Friend",
+      "Beautiful",
+      "Smile",
+      "Eyes",
+      "Kiss",
+      "Crazy",
+      "Party",
+      "Music",
+      "Rock",
+      "Sweet",
+      "Angel",
+      "Heaven",
+      "Road",
+      "City",
+      "Money",
+      "Magic",
+      "Young",
+      "Free",
+      "Run",
+      "Stay",
+      "Go",
+      "Come",
+      "Hold",
+      "Feel",
+      "Believe",
+      "Remember",
+      "Sorry",
+      "Hello",
+      "Goodbye"
+    ];
+
+    const wordDisplay = document.getElementById("word");
+    const wordCard = document.getElementById("wordCard");
+    const newWordButton = document.getElementById("newWordButton");
+
+    let isShuffling = false;
+    let previousWord = "";
+
+    function getRandomWord() {
+      let selectedWord;
+
+      do {
+        const randomIndex = Math.floor(Math.random() * words.length);
+        selectedWord = words[randomIndex];
+      } while (selectedWord === previousWord && words.length > 1);
+
+      return selectedWord;
+    }
+
+    function showNewWord() {
+      if (isShuffling) {
+        return;
+      }
+
+      isShuffling = true;
+      newWordButton.disabled = true;
+      newWordButton.textContent = "CHOOSING...";
+      wordCard.classList.add("shuffle");
+
+      let spins = 22;
+
+      const shuffleInterval = setInterval(() => {
+        const temporaryWord =
+          words[Math.floor(Math.random() * words.length)];
+
+        wordDisplay.textContent = temporaryWord;
+        spins -= 1;
+
+        if (spins <= 0) {
+          clearInterval(shuffleInterval);
+
+          const finalWord = getRandomWord();
+          previousWord = finalWord;
+          wordDisplay.textContent = finalWord;
+
+          wordCard.classList.remove("shuffle");
+          newWordButton.disabled = false;
+          newWordButton.textContent = "NEW WORD";
+          isShuffling = false;
+
+          navigator.vibrate?.(80);
+        }
+      }, 55);
+    }
+
+    newWordButton.addEventListener("click", showNewWord);
+
+    const firstWord = getRandomWord();
+    previousWord = firstWord;
+    wordDisplay.textContent = firstWord;
+  </script>
+</body>
+</html>
