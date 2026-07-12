@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FUNMIGO - Who Am I?</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #ffc928 0%, #f49b12 52%, #c94a09 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .logo span {
+      color: #e51e2a;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      text-shadow: 0 3px 0 #000;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+    }
+
+    .name-card {
+      min-height: 270px;
+      background: white;
+      color: #111;
+      border: 6px solid black;
+      border-radius: 32px;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 13px 0 rgba(0, 0, 0, 0.35);
+      margin-bottom: 30px;
+    }
+
+    .name-card.shuffle {
+      animation: bounce 0.14s infinite alternate;
+    }
+
+    .category {
+      display: inline-block;
+      background: #ffc400;
+      color: #111;
+      border: 3px solid #111;
+      border-radius: 999px;
+      padding: 8px 16px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+    }
+
+    .celebrity-name {
+      font-size: clamp(40px, 12vw, 66px);
+      line-height: 1.05;
+      font-weight: 900;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      width: 100%;
+      background: #e51e2a;
+      color: white;
+      border: 4px solid black;
+      border-radius: 18px;
+      padding: 18px 24px;
+      font-size: 23px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 black;
+    }
+
+    button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 800;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.85;
+    }
+
+    @keyframes bounce {
+      from {
+        transform: scale(1) rotate(-1deg);
+      }
+
+      to {
+        transform: scale(1.035) rotate(1deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <div class="title">⭐ WHO AM I?</div>
+
+    <div class="subtitle">
+      Describe the celebrity without saying their name!
+    </div>
+
+    <section id="nameCard" class="name-card">
+      <div id="category" class="category">MUSIC</div>
+      <div id="celebrityName" class="celebrity-name">
+        MICHAEL JACKSON
+      </div>
+    </section>
+
+    <button id="newNameButton" type="button">
+      GET A CELEBRITY
+    </button>
+
+    <div class="hint">
+      No names, initials, rhymes, or direct clues.
+    </div>
+
+    <div class="footer">
+      © 2026 FUNMIGO. ALL RIGHTS RESERVED.
+    </div>
+  </main>
+
+  <script>
+    const celebrities = [
+      { name: "Michael Jackson", category: "MUSIC" },
+      { name: "Madonna", category: "MUSIC" },
+      { name: "Beyoncé", category: "MUSIC" },
+      { name: "Taylor Swift", category: "MUSIC" },
+      { name: "Elvis Presley", category: "MUSIC" },
+      { name: "Whitney Houston", category: "MUSIC" },
+      { name: "Britney Spears", category: "MUSIC" },
+      { name: "Lady Gaga", category: "MUSIC" },
+      { name: "Rihanna", category: "MUSIC" },
+      { name: "Bruno Mars", category: "MUSIC" },
+      { name: "Ariana Grande", category: "MUSIC" },
+      { name: "Justin Bieber", category: "MUSIC" },
+      { name: "Billie Eilish", category: "MUSIC" },
+      { name: "Eminem", category: "MUSIC" },
+      { name: "Snoop Dogg", category: "MUSIC" },
+      { name: "Drake", category: "MUSIC" },
+      { name: "Kanye West", category: "MUSIC" },
+      { name: "Jennifer Lopez", category: "MUSIC" },
+      { name: "Miley Cyrus", category: "MUSIC" },
+      { name: "Dolly Parton", category: "MUSIC" },
+      { name: "Stevie Wonder", category: "MUSIC" },
+      { name: "Mariah Carey", category: "MUSIC" },
+      { name: "Katy Perry", category: "MUSIC" },
+      { name: "Selena Gomez", category: "MUSIC" },
+      { name: "Ed Sheeran", category: "MUSIC" },
+
+      { name: "Will Smith", category: "MOVIES & TV" },
+      { name: "Tom Cruise", category: "MOVIES & TV" },
+      { name: "Leonardo DiCaprio", category: "MOVIES & TV" },
+      { name: "Brad Pitt", category: "MOVIES & TV" },
+      { name: "Angelina Jolie", category: "MOVIES & TV" },
+      { name: "Johnny Depp", category: "MOVIES & TV" },
+      { name: "Dwayne Johnson", category: "MOVIES & TV" },
+      { name: "Tom Hanks", category: "MOVIES & TV" },
+      { name: "Morgan Freeman", category: "MOVIES & TV" },
+      { name: "Julia Roberts", category: "MOVIES & TV" },
+      { name: "Sandra Bullock", category: "MOVIES & TV" },
+      { name: "Jennifer Aniston", category: "MOVIES & TV" },
+      { name: "George Clooney", category: "MOVIES & TV" },
+      { name: "Robert Downey Jr.", category: "MOVIES & TV" },
+      { name: "Scarlett Johansson", category: "MOVIES & TV" },
+      { name: "Chris Hemsworth", category: "MOVIES & TV" },
+      { name: "Ryan Reynolds", category: "MOVIES & TV" },
+      { name: "Zendaya", category: "MOVIES & TV" },
+      { name: "Meryl Streep", category: "MOVIES & TV" },
+      { name: "Samuel L. Jackson", category: "MOVIES & TV" },
+      { name: "Adam Sandler", category: "MOVIES & TV" },
+      { name: "Jim Carrey", category: "MOVIES & TV" },
+      { name: "Eddie Murphy", category: "MOVIES & TV" },
+      { name: "Oprah Winfrey", category: "TV & MEDIA" },
+      { name: "Ellen DeGeneres", category: "TV & MEDIA" },
+      { name: "Jimmy Fallon", category: "TV & MEDIA" },
+      { name: "Gordon Ramsay", category: "TV & MEDIA" },
+      { name: "Kim Kardashian", category: "TV & MEDIA" },
+      { name: "Kylie Jenner", category: "TV & MEDIA" },
+      { name: "MrBeast", category: "TV & MEDIA" },
+
+      { name: "Michael Jordan", category: "SPORTS" },
+      { name: "LeBron James", category: "SPORTS" },
+      { name: "Serena Williams", category: "SPORTS" },
+      { name: "Tiger Woods", category: "SPORTS" },
+      { name: "Muhammad Ali", category: "SPORTS" },
+      { name: "Tom Brady", category: "SPORTS" },
+      { name: "Stephen Curry", category: "SPORTS" },
+      { name: "Shaquille O'Neal", category: "SPORTS" },
+      { name: "Kobe Bryant", category: "SPORTS" },
+      { name: "Simone Biles", category: "SPORTS" },
+      { name: "Mike Tyson", category: "SPORTS" },
+      { name: "Usain Bolt", category: "SPORTS" },
+      { name: "Lionel Messi", category: "SPORTS" },
+      { name: "Cristiano Ronaldo", category: "SPORTS" },
+      { name: "David Beckham", category: "SPORTS" },
+
+      { name: "Elon Musk", category: "BUSINESS & TECH" },
+      { name: "Bill Gates", category: "BUSINESS & TECH" },
+      { name: "Steve Jobs", category: "BUSINESS & TECH" },
+      { name: "Mark Zuckerberg", category: "BUSINESS & TECH" },
+      { name: "Jeff Bezos", category: "BUSINESS & TECH" },
+      { name: "Walt Disney", category: "BUSINESS & CULTURE" },
+      { name: "Martha Stewart", category: "BUSINESS & TV" },
+
+      { name: "Barack Obama", category: "PUBLIC FIGURES" },
+      { name: "Michelle Obama", category: "PUBLIC FIGURES" },
+      { name: "Donald Trump", category: "PUBLIC FIGURES" },
+      { name: "Joe Biden", category: "PUBLIC FIGURES" },
+      { name: "Kamala Harris", category: "PUBLIC FIGURES" },
+      { name: "Abraham Lincoln", category: "HISTORY" },
+      { name: "George Washington", category: "HISTORY" },
+      { name: "Martin Luther King Jr.", category: "HISTORY" },
+      { name: "Albert Einstein", category: "HISTORY & SCIENCE" },
+      { name: "Neil Armstrong", category: "HISTORY & SCIENCE" },
+
+      { name: "Arnold Schwarzenegger", category: "MOVIES & PUBLIC LIFE" },
+      { name: "Sylvester Stallone", category: "MOVIES" },
+      { name: "Jackie Chan", category: "MOVIES" },
+      { name: "Harrison Ford", category: "MOVIES" },
+      { name: "Keanu Reeves", category: "MOVIES" },
+      { name: "Anne Hathaway", category: "MOVIES" },
+      { name: "Natalie Portman", category: "MOVIES" },
+      { name: "Denzel Washington", category: "MOVIES" },
+      { name: "Steve Carell", category: "MOVIES & TV" },
+      { name: "Kevin Hart", category: "COMEDY & MOVIES" },
+      { name: "Chris Rock", category: "COMEDY & MOVIES" },
+      { name: "Jerry Seinfeld", category: "COMEDY & TV" }
+      { name: "Steven Spielberg", category: "MOVIES" },
+      { name: "Stan Lee", category: "COMICS & MOVIES" },
+      { name: "Stephen King", category: "BOOKS" },
+      { name: "J.K. Rowling", category: "BOOKS" }
+    ];
+
+    const nameCard = document.getElementById("nameCard");
+    const celebrityName = document.getElementById("celebrityName");
+    const categoryDisplay = document.getElementById("category");
+    const newNameButton = document.getElementById("newNameButton");
+
+    let isShuffling = false;
+    let previousIndex = -1;
+
+    function getRandomIndex() {
+      let selectedIndex;
+
+      do {
+        selectedIndex = Math.floor(Math.random() * celebrities.length);
+      } while (
+        selectedIndex === previousIndex &&
+        celebrities.length > 1
+      );
+
+      return selectedIndex;
+    }
+
+    function displayCelebrity(index) {
+      celebrityName.textContent = celebrities[index].name;
+      categoryDisplay.textContent = celebrities[index].category;
+    }
+
+    function showNewCelebrity() {
+      if (isShuffling) {
+        return;
+      }
+
+      isShuffling = true;
+      newNameButton.disabled = true;
+      newNameButton.textContent = "CHOOSING...";
+      nameCard.classList.add("shuffle");
+
+      let spins = 22;
+
+      const shuffleInterval = setInterval(() => {
+        const temporaryIndex =
+          Math.floor(Math.random() * celebrities.length);
+
+        displayCelebrity(temporaryIndex);
+        spins -= 1;
+
+        if (spins <= 0) {
+          clearInterval(shuffleInterval);
+
+          const finalIndex = getRandomIndex();
+          previousIndex = finalIndex;
+          displayCelebrity(finalIndex);
+
+          nameCard.classList.remove("shuffle");
+          newNameButton.disabled = false;
+          newNameButton.textContent = "NEW CELEBRITY";
+          isShuffling = false;
+
+          navigator.vibrate?.(80);
+        }
+      }, 55);
+    }
+
+    newNameButton.addEventListener(
+      "click",
+      showNewCelebrity
+    );
+
+    const firstIndex = getRandomIndex();
+    previousIndex = firstIndex;
+    displayCelebrity(firstIndex);
+  </script>
+</body>
+</html>
