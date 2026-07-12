@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FUNMIGO - Memory Story</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #2431b8 0%, #101878 52%, #070b35 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    .title {
+      font-size: 25px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 22px;
+      opacity: 0.95;
+    }
+
+    .card {
+      background: white;
+      color: #111;
+      border: 5px solid black;
+      border-radius: 28px;
+      padding: 25px 22px;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .label {
+      display: inline-block;
+      background: #ffc400;
+      border: 3px solid #111;
+      border-radius: 999px;
+      padding: 8px 16px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .story-title {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      color: #1826a0;
+    }
+
+    .story {
+      font-size: 21px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .question-box {
+      background: #f2f4ff;
+      border: 3px solid #1826a0;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .question-number {
+      color: #1826a0;
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+
+    .answer {
+      margin-top: 12px;
+      padding: 11px;
+      background: #ddf8df;
+      border: 2px solid #19843b;
+      border-radius: 12px;
+      color: #12672d;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .buttons {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button {
+      width: 100%;
+      border: 4px solid black;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 0 black;
+    }
+
+    button:active {
+      transform: translateY(5px);
+      box-shadow: none;
+    }
+
+    .primary {
+      background: #ffc400;
+      color: #111;
+      font-size: 21px;
+      padding: 17px;
+    }
+
+    .answer-button {
+      margin-top: 12px;
+      background: #22c55e;
+      color: #07120b;
+      font-size: 15px;
+      padding: 10px;
+      box-shadow: 0 4px 0 black;
+    }
+
+    .new-story {
+      background: #ef4444;
+      color: white;
+      font-size: 20px;
+      padding: 16px;
+    }
+
+    .rule {
+      margin-top: 20px;
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 900;
+    }
+
+    .footer {
+      margin-top: 26px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <div class="title">🧠 MEMORY STORY</div>
+
+    <div class="subtitle">
+      Listen carefully. Every detail matters!
+    </div>
+
+    <section class="card">
+      <div id="storySection">
+        <div class="label">READ ALOUD ONCE</div>
+        <div id="storyTitle" class="story-title"></div>
+        <div id="storyText" class="story"></div>
+      </div>
+
+      <div id="questionSection" class="hidden">
+        <div class="label">MEMORY QUESTIONS</div>
+        <div id="questionList" class="question-list"></div>
+      </div>
+    </section>
+
+    <div class="buttons">
+      <button id="showQuestionsButton" class="primary" type="button">
+        HIDE STORY & SHOW QUESTIONS
+      </button>
+
+      <button id="newStoryButton" class="new-story" type="button">
+        NEW STORY
+      </button>
+    </div>
+
+    <div class="rule">
+      🏆 The first team to answer 3 questions correctly wins!
+    </div>
+
+    <div class="footer">
+      © 2026 FUNMIGO. ALL RIGHTS RESERVED.
+    </div>
+  </main>
+
+  <script>
+    const stories = [
+      {
+        title: "THE STRANGE PICNIC",
+        story:
+          "On Tuesday afternoon, Emma carried a red basket to Willow Lake. Inside were three apples, two cheese sandwiches, a yellow towel, and a silver spoon. A brown dog followed her while seven ducks swam beside a small blue boat.",
+        questions: [
+          { question: "What color was the boat?", answer: "Blue" },
+          { question: "How many apples were inside the basket?", answer: "Three" },
+          { question: "Which animal followed Emma?", answer: "A brown dog" },
+          { question: "What day did Emma visit the lake?", answer: "Tuesday" },
+          { question: "What color was the towel?", answer: "Yellow" }
+        ]
+      },
+
+      {
+        title: "THE BUS STOP MYSTERY",
+        story:
+          "At eight fifteen, Daniel waited beside a green bus stop wearing a purple jacket. He held four balloons and a newspaper called The Morning Star. A white cat slept nearby while bus number twenty-three arrived carrying six passengers.",
+        questions: [
+          { question: "What was the newspaper called?", answer: "The Morning Star" },
+          { question: "How many passengers were on the bus?", answer: "Six" },
+          { question: "What color was Daniel's jacket?", answer: "Purple" },
+          { question: "What number was the bus?", answer: "Twenty-three" },
+          { question: "What time was Daniel waiting?", answer: "8:15" }
+        ]
+      },
+
+      {
+        title: "THE BIRTHDAY SURPRISE",
+        story:
+          "For Maya's ninth birthday, her uncle baked a chocolate cake shaped like a star. Twelve guests arrived at six o'clock. The table had pink plates, green cups, five candles, and a toy giraffe wearing a tiny black hat.",
+        questions: [
+          { question: "What animal wore the black hat?", answer: "A toy giraffe" },
+          { question: "How many guests arrived?", answer: "Twelve" },
+          { question: "What shape was the cake?", answer: "A star" },
+          { question: "What color were the cups?", answer: "Green" },
+          { question: "How old was Maya?", answer: "Nine" }
+        ]
+      },
+
+      {
+        title: "THE LOST BACKPACK",
+        story:
+          "Noah left his orange backpack inside a small bookstore on King Street. It contained a blue notebook, two bananas, a train ticket, and eleven dollars. The cashier, Mrs. Green, found it beneath a wooden chair beside the travel section.",
+        questions: [
+          { question: "How much money was inside?", answer: "Eleven dollars" },
+          { question: "What street was the bookstore on?", answer: "King Street" },
+          { question: "What color was the notebook?", answer: "Blue" },
+          { question: "Who found the backpack?", answer: "Mrs. Green" },
+          { question: "How many bananas were inside?", answer: "Two" }
+        ]
+      },
+
+      {
+        title: "THE BEACH ADVENTURE",
+        story:
+          "On Sunday morning, Lily and Max rode yellow bicycles to Sunset Beach. They packed four towels, lemonade, a green umbrella, and a volleyball. At noon, they saw three dolphins while a man in a striped shirt played the trumpet.",
+        questions: [
+          { question: "Which instrument did the man play?", answer: "The trumpet" },
+          { question: "What was the beach called?", answer: "Sunset Beach" },
+          { question: "How many dolphins did they see?", answer: "Three" },
+          { question: "What color were the bicycles?", answer: "Yellow" },
+          { question: "What color was the umbrella?", answer: "Green" }
+        ]
+      },
+
+      {
+        title: "THE SCHOOL CONCERT",
+        story:
+          "Friday's school concert began at seven thirty in the main hall. Olivia wore silver shoes and played a red guitar. Twenty parents watched as the choir sang three songs. Afterward, Mr. Brown gave everyone strawberry ice cream.",
+        questions: [
+          { question: "What flavor was the ice cream?", answer: "Strawberry" },
+          { question: "How many songs did the choir sing?", answer: "Three" },
+          { question: "What time did the concert begin?", answer: "7:30" },
+          { question: "What color was Olivia's guitar?", answer: "Red" },
+          { question: "How many parents watched?", answer: "Twenty" }
+        ]
+      }
+    ];
+
+    const storySection = document.getElementById("storySection");
+    const questionSection = document.getElementById("questionSection");
+    const storyTitle = document.getElementById("storyTitle");
+    const storyText = document.getElementById("storyText");
+    const questionList = document.getElementById("questionList");
+
+    const showQuestionsButton =
+      document.getElementById("showQuestionsButton");
+
+    const newStoryButton =
+      document.getElementById("newStoryButton");
+
+    let currentStoryIndex = -1;
+
+    function shuffleArray(array) {
+      const shuffled = [...array];
+
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[randomIndex]] =
+          [shuffled[randomIndex], shuffled[i]];
+      }
+
+      return shuffled;
+    }
+
+    function getRandomStoryIndex() {
+      let newIndex;
+
+      do {
+        newIndex = Math.floor(Math.random() * stories.length);
+      } while (
+        newIndex === currentStoryIndex &&
+        stories.length > 1
+      );
+
+      return newIndex;
+    }
+
+    function createQuestionBox(item, index) {
+      const box = document.createElement("div");
+      box.className = "question-box";
+
+      const number = document.createElement("div");
+      number.className = "question-number";
+      number.textContent = `QUESTION ${index + 1}`;
+
+      const question = document.createElement("div");
+      question.className = "question-text";
+      question.textContent = item.question;
+
+      const answerButton = document.createElement("button");
+      answerButton.className = "answer-button";
+      answerButton.type = "button";
+      answerButton.textContent = "SHOW ANSWER";
+
+      const answer = document.createElement("div");
+      answer.className = "answer hidden";
+      answer.textContent = `✅ ${item.answer}`;
+
+      answerButton.addEventListener("click", () => {
+        const isHidden = answer.classList.contains("hidden");
+
+        if (isHidden) {
+          answer.classList.remove("hidden");
+          answerButton.textContent = "HIDE ANSWER";
+        } else {
+          answer.classList.add("hidden");
+          answerButton.textContent = "SHOW ANSWER";
+        }
+      });
+
+      box.appendChild(number);
+      box.appendChild(question);
+      box.appendChild(answerButton);
+      box.appendChild(answer);
+
+      return box;
+    }
+
+    function loadNewStory() {
+      currentStoryIndex = getRandomStoryIndex();
+
+      const selectedStory = stories[currentStoryIndex];
+
+      storyTitle.textContent = selectedStory.title;
+      storyText.textContent = selectedStory.story;
+
+      questionList.innerHTML = "";
+
+      const shuffledQuestions =
+        shuffleArray(selectedStory.questions);
+
+      shuffledQuestions.forEach((item, index) => {
+        questionList.appendChild(
+          createQuestionBox(item, index)
+        );
+      });
+
+      storySection.classList.remove("hidden");
+      questionSection.classList.add("hidden");
+      showQuestionsButton.classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function showQuestions() {
+      storySection.classList.add("hidden");
+      questionSection.classList.remove("hidden");
+      showQuestionsButton.classList.add("hidden");
+
+      navigator.vibrate?.(80);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    showQuestionsButton.addEventListener(
+      "click",
+      showQuestions
+    );
+
+    newStoryButton.addEventListener(
+      "click",
+      loadNewStory
+    );
+
+    loadNewStory();
+  </script>
+</body>
+</html>
