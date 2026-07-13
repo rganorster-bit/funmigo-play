@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Funmigo – Who Is Poppy?</title>
+
+  <style>
+    :root {
+      --purple: #5720a5;
+      --dark-purple: #321063;
+      --yellow: #ffc400;
+      --red: #e31b23;
+      --green: #17a84b;
+      --cream: #fff8e8;
+      --white: #ffffff;
+      --black: #111111;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--black);
+
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(255, 255, 255, 0.08) 0 2px,
+          transparent 3px
+        ),
+        linear-gradient(
+          135deg,
+          var(--dark-purple),
+          var(--purple)
+        );
+
+      background-size: 28px 28px, auto;
+    }
+
+    .game-card {
+      width: 100%;
+      max-width: 540px;
+      padding: 28px 20px;
+
+      text-align: center;
+      background: var(--cream);
+
+      border: 6px solid var(--white);
+      outline: 5px solid var(--black);
+      border-radius: 28px;
+
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .logo {
+      margin-bottom: 5px;
+
+      font-size: clamp(36px, 10vw, 56px);
+      font-weight: 1000;
+      letter-spacing: -2px;
+
+      color: var(--white);
+      -webkit-text-stroke: 2px var(--black);
+      text-shadow: 4px 4px 0 var(--black);
+    }
+
+    .logo span {
+      color: var(--yellow);
+    }
+
+    h1 {
+      margin: 10px 0 4px;
+
+      font-size: clamp(32px, 8vw, 48px);
+      font-weight: 1000;
+      line-height: 1;
+
+      color: var(--purple);
+    }
+
+    .subtitle {
+      margin: 10px 0 22px;
+
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .panel {
+      margin: 18px 0;
+      padding: 22px 18px;
+
+      background: var(--white);
+      border: 4px solid var(--black);
+      border-radius: 20px;
+
+      box-shadow: 0 7px 0 var(--black);
+    }
+
+    .panel-title {
+      margin-bottom: 15px;
+
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    .player-selector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+
+      margin: 20px 0;
+    }
+
+    .player-count {
+      min-width: 90px;
+
+      font-size: 64px;
+      font-weight: 1000;
+      color: var(--purple);
+    }
+
+    .small-button {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    button {
+      width: 100%;
+      padding: 17px 12px;
+
+      font-size: 20px;
+      font-weight: 1000;
+
+      color: var(--black);
+      background: var(--yellow);
+
+      border: 4px solid var(--black);
+      border-radius: 16px;
+
+      box-shadow: 0 7px 0 var(--black);
+      cursor: pointer;
+
+      transition:
+        transform 0.08s ease,
+        box-shadow 0.08s ease;
+    }
+
+    button:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 var(--black);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary-button {
+      background: var(--yellow);
+    }
+
+    .green-button {
+      color: var(--white);
+      background: var(--green);
+    }
+
+    .red-button {
+      color: var(--white);
+      background: var(--red);
+    }
+
+    .purple-button {
+      color: var(--white);
+      background: var(--purple);
+    }
+
+    .secondary-button {
+      margin-top: 12px;
+      background: var(--white);
+    }
+
+    .player-progress {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 9px 16px;
+
+      color: var(--white);
+      background: var(--black);
+
+      border-radius: 999px;
+
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .phone-message {
+      min-height: 220px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      padding: 22px;
+
+      background: var(--white);
+      border: 5px solid var(--black);
+      border-radius: 24px;
+
+      box-shadow: 0 8px 0 var(--black);
+    }
+
+    .big-icon {
+      margin-bottom: 10px;
+      font-size: 58px;
+      line-height: 1;
+    }
+
+    .ready-heading {
+      font-size: clamp(28px, 8vw, 42px);
+      font-weight: 1000;
+      line-height: 1.1;
+    }
+
+    .role-label {
+      margin-bottom: 10px;
+
+      font-size: 16px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .secret-word {
+      font-size: clamp(45px, 13vw, 72px);
+      font-weight: 1000;
+      line-height: 1;
+
+      color: var(--green);
+      overflow-wrap: anywhere;
+    }
+
+    .poppy-role {
+      font-size: clamp(42px, 12vw, 68px);
+      font-weight: 1000;
+      line-height: 1;
+
+      color: var(--purple);
+    }
+
+    .secret-warning {
+      margin-top: 17px;
+      padding: 11px 14px;
+
+      color: var(--white);
+      background: var(--black);
+
+      border-radius: 12px;
+
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .secret-warning strong {
+      color: var(--yellow);
+    }
+
+    .pass-message {
+      margin: 14px 0 20px;
+
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .rules {
+      margin-top: 22px;
+      padding: 14px;
+
+      color: var(--white);
+      background: var(--black);
+
+      border-radius: 15px;
+
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.5;
+    }
+
+    .rules strong {
+      color: var(--yellow);
+    }
+
+    .discussion-timer {
+      margin: 20px auto;
+      padding: 22px 10px;
+
+      color: var(--purple);
+      background: var(--white);
+
+      border: 5px solid var(--black);
+      border-radius: 22px;
+
+      box-shadow: 0 8px 0 var(--black);
+
+      font-family: "Courier New", monospace;
+      font-size: clamp(64px, 19vw, 100px);
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .discussion-heading {
+      font-size: clamp(30px, 8vw, 45px);
+      font-weight: 1000;
+      color: var(--purple);
+    }
+
+    .time-up {
+      color: var(--red);
+      animation: pulse 0.8s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.05);
+      }
+    }
+
+    .reveal-result {
+      display: grid;
+      gap: 14px;
+
+      margin: 18px 0;
+    }
+
+    .result-box {
+      padding: 18px 12px;
+
+      background: var(--white);
+      border: 4px solid var(--black);
+      border-radius: 17px;
+    }
+
+    .result-label {
+      margin-bottom: 7px;
+
+      font-size: 14px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .result-value {
+      font-size: clamp(30px, 9vw, 48px);
+      font-weight: 1000;
+      color: var(--purple);
+    }
+
+    .footer {
+      margin-top: 18px;
+
+      font-size: 17px;
+      font-weight: 1000;
+    }
+
+    .footer span {
+      color: var(--purple);
+    }
+
+    @media (max-width: 420px) {
+      .game-card {
+        padding: 24px 14px;
+      }
+
+      .phone-message {
+        min-height: 205px;
+        padding: 18px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="game-card">
+
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <h1>WHO IS POPPY?</h1>
+
+    <p class="subtitle">
+      One word. One imposter. One team decision.
+    </p>
+
+    <!-- SETUP SCREEN -->
+    <section id="setupScreen" class="screen active">
+
+      <div class="panel">
+
+        <div class="panel-title">
+          HOW MANY PLAYERS ARE ON THIS TEAM?
+        </div>
+
+        <div class="player-selector">
+
+          <button
+            id="minusButton"
+            class="small-button"
+            type="button"
+            aria-label="Remove one player"
+          >
+            −
+          </button>
+
+          <div
+            id="playerCount"
+            class="player-count"
+          >
+            4
+          </div>
+
+          <button
+            id="plusButton"
+            class="small-button"
+            type="button"
+            aria-label="Add one player"
+          >
+            +
+          </button>
+
+        </div>
+
+        <p>
+          One player will secretly become
+          <strong>POPPY</strong>.
+        </p>
+
+      </div>
+
+      <button
+        id="createRoundButton"
+        class="purple-button"
+        type="button"
+      >
+        CREATE SECRET ROLES
+      </button>
+
+      <div class="rules">
+        Use <strong>one phone per team</strong>.<br>
+        Pass the phone from player to player.
+      </div>
+
+    </section>
+
+    <!-- PASS PHONE SCREEN -->
+    <section id="passScreen" class="screen">
+
+      <div
+        id="playerProgress"
+        class="player-progress"
+      >
+        PLAYER 1 OF 4
+      </div>
+
+      <div class="phone-message">
+
+        <div class="big-icon">
+          📱
+        </div>
+
+        <div class="ready-heading">
+          PASS THE PHONE
+        </div>
+
+        <div class="pass-message">
+          Only the current player may look at the screen.
+        </div>
+
+      </div>
+
+      <button
+        id="revealRoleButton"
+        class="green-button"
+        type="button"
+      >
+        TAP ONCE TO SEE YOUR ROLE
+      </button>
+
+      <div class="rules">
+        <strong>LOOK → MEMORIZE → HIDE</strong><br>
+        Each player must tap only once.
+      </div>
+
+    </section>
+
+    <!-- ROLE SCREEN -->
+    <section id="roleScreen" class="screen">
+
+      <div
+        id="rolePlayerProgress"
+        class="player-progress"
+      >
+        PLAYER 1 OF 4
+      </div>
+
+      <div class="phone-message">
+
+        <div
+          id="roleIcon"
+          class="big-icon"
+        >
+          🤫
+        </div>
+
+        <div
+          id="roleLabel"
+          class="role-label"
+        >
+          YOUR SECRET WORD
+        </div>
+
+        <div
+          id="roleValue"
+          class="secret-word"
+        >
+          PIZZA
+        </div>
+
+        <div class="secret-warning">
+          <strong>TOP SECRET!</strong><br>
+          Do not show anyone.
+        </div>
+
+      </div>
+
+      <button
+        id="hideRoleButton"
+        class="red-button"
+        type="button"
+      >
+        HIDE & PASS THE PHONE
+      </button>
+
+    </section>
+
+    <!-- CLUE SCREEN -->
+    <section id="clueScreen" class="screen">
+
+      <div class="phone-message">
+
+        <div class="big-icon">
+          🗣️
+        </div>
+
+        <div class="ready-heading">
+          EVERYONE HAS A ROLE!
+        </div>
+
+        <div class="pass-message">
+          Take turns giving
+          <strong>ONE WORD ONLY</strong>
+          as a clue.
+        </div>
+
+      </div>
+
+      <button
+        id="startDiscussionButton"
+        class="purple-button"
+        type="button"
+      >
+        START 60-SECOND DISCUSSION
+      </button>
+
+      <div class="rules">
+        No gestures · No spelling · No translations<br>
+        Then agree on <strong>one final vote</strong>.
+      </div>
+
+    </section>
+
+    <!-- DISCUSSION SCREEN -->
+    <section id="discussionScreen" class="screen">
+
+      <div
+        id="discussionHeading"
+        class="discussion-heading"
+      >
+        WHO IS POPPY?
+      </div>
+
+      <div
+        id="discussionTimer"
+        class="discussion-timer"
+        aria-live="polite"
+      >
+        01:00
+      </div>
+
+      <button
+        id="finishDiscussionButton"
+        class="red-button"
+        type="button"
+      >
+        LOCK IN YOUR VOTE
+      </button>
+
+      <div class="rules">
+        Your team must agree on
+        <strong>one player</strong> before time runs out.
+      </div>
+
+    </section>
+
+    <!-- FINAL REVEAL SCREEN -->
+    <section id="finalScreen" class="screen">
+
+      <div class="phone-message">
+
+        <div class="big-icon">
+          👑
+        </div>
+
+        <div class="ready-heading">
+          FINAL ANSWER LOCKED!
+        </div>
+
+        <div class="pass-message">
+          Ready to reveal the truth?
+        </div>
+
+      </div>
+
+      <button
+        id="revealAnswerButton"
+        class="purple-button"
+        type="button"
+      >
+        REVEAL POPPY
+      </button>
+
+    </section>
+
+    <!-- ANSWER SCREEN -->
+    <section id="answerScreen" class="screen">
+
+      <div class="reveal-result">
+
+        <div class="result-box">
+          <div class="result-label">
+            POPPY WAS
+          </div>
+
+          <div
+            id="poppyResult"
+            class="result-value"
+          >
+            PLAYER 3
+          </div>
+        </div>
+
+        <div class="result-box">
+          <div class="result-label">
+            THE SECRET WORD WAS
+          </div>
+
+          <div
+            id="wordResult"
+            class="result-value"
+          >
+            PIZZA
+          </div>
+        </div>
+
+      </div>
+
+      <button
+        id="newRoundButton"
+        class="green-button"
+        type="button"
+      >
+        PLAY A NEW ROUND
+      </button>
+
+    </section>
+
+    <div class="footer">
+      LET’S <span>FUNMIGO!</span>
+    </div>
+
+  </main>
+
+  <script>
+    const wordBank = [
+      "PIZZA",
+      "BEACH",
+      "TIGER",
+      "ROBOT",
+      "SCHOOL",
+      "RAINBOW",
+      "GUITAR",
+      "CHOCOLATE",
+      "AIRPLANE",
+      "CASTLE",
+      "VOLCANO",
+      "BIRTHDAY",
+      "PENGUIN",
+      "CAMERA",
+      "DINOSAUR",
+      "HOSPITAL",
+      "FOOTBALL",
+      "POPCORN",
+      "SPIDER",
+      "PIRATE",
+      "DESERT",
+      "TRAIN",
+      "MONKEY",
+      "WEDDING",
+      "SUPERMARKET",
+      "DRAGON",
+      "CIRCUS",
+      "BANANA",
+      "POLICE",
+      "SNOWMAN",
+      "SWIMMING",
+      "ELEPHANT",
+      "DOCTOR",
+      "MOUNTAIN",
+      "ICE CREAM",
+      "ZOMBIE",
+      "KITCHEN",
+      "TEACHER",
+      "MUSIC",
+      "ROLLER COASTER",
+      "FIREWORKS",
+      "JUNGLE",
+      "MAGIC",
+      "SPACE",
+      "CLOWN",
+      "CAMPING",
+      "BASKETBALL",
+      "SHARK",
+      "RESTAURANT",
+      "TREASURE"
+    ];
+
+    const screens = {
+      setup: document.getElementById("setupScreen"),
+      pass: document.getElementById("passScreen"),
+      role: document.getElementById("roleScreen"),
+      clue: document.getElementById("clueScreen"),
+      discussion:
+        document.getElementById("discussionScreen"),
+      final: document.getElementById("finalScreen"),
+      answer: document.getElementById("answerScreen")
+    };
+
+    const playerCountElement =
+      document.getElementById("playerCount");
+
+    const minusButton =
+      document.getElementById("minusButton");
+
+    const plusButton =
+      document.getElementById("plusButton");
+
+    const createRoundButton =
+      document.getElementById("createRoundButton");
+
+    const playerProgressElement =
+      document.getElementById("playerProgress");
+
+    const rolePlayerProgressElement =
+      document.getElementById("rolePlayerProgress");
+
+    const revealRoleButton =
+      document.getElementById("revealRoleButton");
+
+    const roleIconElement =
+      document.getElementById("roleIcon");
+
+    const roleLabelElement =
+      document.getElementById("roleLabel");
+
+    const roleValueElement =
+      document.getElementById("roleValue");
+
+    const hideRoleButton =
+      document.getElementById("hideRoleButton");
+
+    const startDiscussionButton =
+      document.getElementById("startDiscussionButton");
+
+    const discussionHeadingElement =
+      document.getElementById("discussionHeading");
+
+    const discussionTimerElement =
+      document.getElementById("discussionTimer");
+
+    const finishDiscussionButton =
+      document.getElementById("finishDiscussionButton");
+
+    const revealAnswerButton =
+      document.getElementById("revealAnswerButton");
+
+    const poppyResultElement =
+      document.getElementById("poppyResult");
+
+    const wordResultElement =
+      document.getElementById("wordResult");
+
+    const newRoundButton =
+      document.getElementById("newRoundButton");
+
+    let playerCount = 4;
+    let currentPlayerIndex = 0;
+    let poppyIndex = 0;
+    let secretWord = "";
+    let discussionInterval = null;
+    let previousWord = "";
+
+    function showScreen(screenName) {
+      Object.values(screens).forEach(function(screen) {
+        screen.classList.remove("active");
+      });
+
+      screens[screenName].classList.add("active");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function updatePlayerCount() {
+      playerCountElement.textContent = playerCount;
+
+      minusButton.disabled = playerCount <= 3;
+      plusButton.disabled = playerCount >= 8;
+    }
+
+    function getRandomNumber(maximum) {
+      return Math.floor(Math.random() * maximum);
+    }
+
+    function chooseSecretWord() {
+      let chosenWord;
+
+      do {
+        chosenWord =
+          wordBank[getRandomNumber(wordBank.length)];
+      } while (
+        chosenWord === previousWord &&
+        wordBank.length > 1
+      );
+
+      previousWord = chosenWord;
+
+      return chosenWord;
+    }
+
+    function updatePlayerProgress() {
+      const progressText =
+        "PLAYER " +
+        (currentPlayerIndex + 1) +
+        " OF " +
+        playerCount;
+
+      playerProgressElement.textContent =
+        progressText;
+
+      rolePlayerProgressElement.textContent =
+        progressText;
+    }
+
+    function createRound() {
+      secretWord = chooseSecretWord();
+      poppyIndex = getRandomNumber(playerCount);
+      currentPlayerIndex = 0;
+
+      updatePlayerProgress();
+      showScreen("pass");
+    }
+
+    function revealCurrentRole() {
+      updatePlayerProgress();
+
+      if (currentPlayerIndex === poppyIndex) {
+        roleIconElement.textContent = "👑";
+        roleLabelElement.textContent =
+          "YOUR SECRET ROLE";
+
+        roleValueElement.className =
+          "poppy-role";
+
+        roleValueElement.textContent =
+          "YOU ARE POPPY!";
+      } else {
+        roleIconElement.textContent = "🤫";
+        roleLabelElement.textContent =
+          "YOUR SECRET WORD";
+
+        roleValueElement.className =
+          "secret-word";
+
+        roleValueElement.textContent =
+          secretWord;
+      }
+
+      showScreen("role");
+    }
+
+    function hideCurrentRole() {
+      currentPlayerIndex += 1;
+
+      roleValueElement.textContent = "";
+
+      if (currentPlayerIndex >= playerCount) {
+        showScreen("clue");
+        return;
+      }
+
+      updatePlayerProgress();
+      showScreen("pass");
+    }
+
+    function formatTime(seconds) {
+      const minutes =
+        Math.floor(seconds / 60);
+
+      const remainingSeconds =
+        seconds % 60;
+
+      return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(remainingSeconds).padStart(2, "0")
+      );
+    }
+
+    function startDiscussion() {
+      clearInterval(discussionInterval);
+
+      let timeLeft = 60;
+
+      discussionHeadingElement.textContent =
+        "WHO IS POPPY?";
+
+      discussionHeadingElement.classList.remove(
+        "time-up"
+      );
+
+      discussionTimerElement.textContent =
+        formatTime(timeLeft);
+
+      showScreen("discussion");
+
+      discussionInterval = setInterval(
+        function() {
+          timeLeft -= 1;
+
+          discussionTimerElement.textContent =
+            formatTime(timeLeft);
+
+          if (timeLeft <= 0) {
+            clearInterval(discussionInterval);
+
+            discussionHeadingElement.textContent =
+              "TIME'S UP!";
+
+            discussionHeadingElement.classList.add(
+              "time-up"
+            );
+          }
+        },
+        1000
+      );
+    }
+
+    function finishDiscussion() {
+      clearInterval(discussionInterval);
+      showScreen("final");
+    }
+
+    function revealAnswer() {
+      poppyResultElement.textContent =
+        "PLAYER " + (poppyIndex + 1);
+
+      wordResultElement.textContent =
+        secretWord;
+
+      showScreen("answer");
+    }
+
+    function resetGame() {
+      clearInterval(discussionInterval);
+
+      currentPlayerIndex = 0;
+      secretWord = "";
+
+      showScreen("setup");
+      updatePlayerCount();
+    }
+
+    minusButton.addEventListener(
+      "click",
+      function() {
+        if (playerCount > 3) {
+          playerCount -= 1;
+          updatePlayerCount();
+        }
+      }
+    );
+
+    plusButton.addEventListener(
+      "click",
+      function() {
+        if (playerCount < 8) {
+          playerCount += 1;
+          updatePlayerCount();
+        }
+      }
+    );
+
+    createRoundButton.addEventListener(
+      "click",
+      createRound
+    );
+
+    revealRoleButton.addEventListener(
+      "click",
+      revealCurrentRole
+    );
+
+    hideRoleButton.addEventListener(
+      "click",
+      hideCurrentRole
+    );
+
+    startDiscussionButton.addEventListener(
+      "click",
+      startDiscussion
+    );
+
+    finishDiscussionButton.addEventListener(
+      "click",
+      finishDiscussion
+    );
+
+    revealAnswerButton.addEventListener(
+      "click",
+      revealAnswer
+    );
+
+    newRoundButton.addEventListener(
+      "click",
+      resetGame
+    );
+
+    updatePlayerCount();
+  </script>
+
+</body>
+</html>
