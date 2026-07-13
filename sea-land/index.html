@@ -169,8 +169,15 @@
       font-weight: 800;
     }
 
+    .sound-note {
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      opacity: 0.9;
+    }
+
     .footer {
-      margin-top: 27px;
+      margin-top: 25px;
       font-size: 14px;
       font-weight: 700;
       opacity: 0.8;
@@ -224,7 +231,7 @@
 
     <div class="buttons">
       <button id="startButton" class="start-button" type="button">
-        START GAME
+        🔊 START WITH SOUND
       </button>
 
       <button id="stopButton" class="stop-button hidden" type="button">
@@ -239,6 +246,10 @@
     <div class="rule">
       SEA = jump inside. LAND = jump outside.<br />
       Wrong move or hesitation? You’re out!
+    </div>
+
+    <div class="sound-note">
+      Turn your phone volume up before starting.
     </div>
 
     <div class="footer">
@@ -272,30 +283,30 @@
       {
         name: "MEDIUM",
         calls: 10,
-        minDelay: 1050,
-        maxDelay: 1450,
+        minDelay: 900,
+        maxDelay: 1250,
         voiceRate: 1.0
       },
       {
         name: "FAST",
         calls: 14,
-        minDelay: 650,
-        maxDelay: 900,
+        minDelay: 500,
+        maxDelay: 750,
         voiceRate: 1.25
       },
       {
         name: "MEDIUM",
         calls: 8,
-        minDelay: 950,
-        maxDelay: 1250,
+        minDelay: 850,
+        maxDelay: 1100,
         voiceRate: 1.05
       },
       {
         name: "VERY FAST",
         calls: Infinity,
-        minDelay: 380,
-        maxDelay: 590,
-        voiceRate: 1.6
+        minDelay: 260,
+        maxDelay: 440,
+        voiceRate: 1.55
       }
     ];
 
@@ -307,6 +318,28 @@
 
     let previousCommand = "";
     let sameCommandCount = 0;
+
+    let selectedVoice = null;
+
+    function chooseEnglishVoice() {
+      const voices = window.speechSynthesis.getVoices();
+
+      selectedVoice =
+        voices.find(
+          voice =>
+            voice.lang === "en-US" &&
+            /Samantha|Google US English|Microsoft/i.test(voice.name)
+        ) ||
+        voices.find(voice => voice.lang === "en-US") ||
+        voices.find(voice => voice.lang.startsWith("en")) ||
+        null;
+    }
+
+    chooseEnglishVoice();
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = chooseEnglishVoice;
+    }
 
     function randomBetween(min, max) {
       return Math.floor(
@@ -337,33 +370,41 @@
       return command;
     }
 
-    function speakCommand(command, rate) {
-      if (!("speechSynthesis" in window)) {
-        return;
-      }
-
-      window.speechSynthesis.cancel();
-
-      const utterance =
-        new SpeechSynthesisUtterance(command);
-
-      utterance.lang = "en-US";
-      utterance.rate = rate;
-      utterance.pitch = 1.05;
-      utterance.volume = 1;
-
-      window.speechSynthesis.speak(utterance);
-    }
-
     function animateCard() {
       commandCard.classList.remove("pop");
-
       void commandCard.offsetWidth;
-
       commandCard.classList.add("pop");
     }
 
-    function showCommand() {
+    function speakCommand(command, rate) {
+      return new Promise(resolve => {
+        if (!("speechSynthesis" in window)) {
+          resolve();
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+
+        const utterance =
+          new SpeechSynthesisUtterance(command);
+
+        utterance.lang = "en-US";
+        utterance.rate = rate;
+        utterance.pitch = 0.9;
+        utterance.volume = 1;
+
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+        }
+
+        utterance.onend = resolve;
+        utterance.onerror = resolve;
+
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+
+    async function showCommand() {
       if (!gameRunning) {
         return;
       }
@@ -383,9 +424,16 @@
       callDisplay.textContent = totalCalls;
 
       animateCard();
-      speakCommand(command, currentPhase.voiceRate);
-
       navigator.vibrate?.(40);
+
+      await speakCommand(
+        command,
+        currentPhase.voiceRate
+      );
+
+      if (!gameRunning) {
+        return;
+      }
 
       if (
         callsInsidePhase >= currentPhase.calls &&
@@ -405,10 +453,38 @@
       timeoutId = setTimeout(showCommand, delay);
     }
 
-    function startGame() {
+    async function unlockSpeech() {
+      if (!("speechSynthesis" in window)) {
+        return;
+      }
+
+      const unlockMessage =
+        new SpeechSynthesisUtterance("Ready");
+
+      unlockMessage.lang = "en-US";
+      unlockMessage.volume = 0.01;
+
+      if (selectedVoice) {
+        unlockMessage.voice = selectedVoice;
+      }
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(unlockMessage);
+
+      await new Promise(resolve => {
+        unlockMessage.onend = resolve;
+        unlockMessage.onerror = resolve;
+
+        setTimeout(resolve, 500);
+      });
+    }
+
+    async function startGame() {
       if (gameRunning) {
         return;
       }
+
+      await unlockSpeech();
 
       gameRunning = true;
       phaseIndex = 0;
@@ -427,29 +503,36 @@
       commandDisplay.textContent = "3";
       commandDisplay.className = "command ready";
 
-      let countdown = 3;
+      const countdownWords = ["3", "2", "1", "GO!"];
 
-      const countdownInterval = setInterval(() => {
-        countdown -= 1;
-
-        if (countdown > 0) {
-          commandDisplay.textContent = countdown;
-        } else {
-          clearInterval(countdownInterval);
-
-          commandDisplay.textContent = "GO!";
-          speakCommand("Go", 1.1);
-
-          setTimeout(showCommand, 650);
+      for (const word of countdownWords) {
+        if (!gameRunning) {
+          return;
         }
-      }, 700);
+
+        commandDisplay.textContent = word;
+        animateCard();
+
+        if (word === "GO!") {
+          await speakCommand("Go", 1.1);
+        }
+
+        await new Promise(resolve =>
+          setTimeout(resolve, 650)
+        );
+      }
+
+      showCommand();
     }
 
     function stopGame() {
       gameRunning = false;
 
       clearTimeout(timeoutId);
-      window.speechSynthesis?.cancel();
+
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
 
       commandDisplay.textContent = "GAME OVER";
       commandDisplay.className = "command ready";
@@ -464,7 +547,10 @@
 
     function resetGame() {
       clearTimeout(timeoutId);
-      window.speechSynthesis?.cancel();
+
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
 
       gameRunning = false;
       phaseIndex = 0;
