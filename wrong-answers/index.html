@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FUNMIGO - Wrong Answers Only</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #f7d928 0%, #f3a915 48%, #d65a0a 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 620px;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 7px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .logo span {
+      color: #e51e2a;
+    }
+
+    .title {
+      font-size: 27px;
+      font-weight: 900;
+      margin-bottom: 5px;
+      text-shadow: 0 3px 0 #000;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .status-box {
+      background: #111;
+      border: 4px solid #fff;
+      border-radius: 16px;
+      padding: 11px 8px;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .status-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: #ffc400;
+      margin-bottom: 3px;
+    }
+
+    .status-value {
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .game-card {
+      background: white;
+      color: #111;
+      border: 6px solid #000;
+      border-radius: 30px;
+      padding: 24px 20px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .team-label {
+      align-self: center;
+      display: inline-block;
+      background: #ffc400;
+      border: 3px solid #111;
+      border-radius: 999px;
+      padding: 8px 17px;
+      margin-bottom: 22px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .question {
+      font-size: clamp(31px, 9vw, 50px);
+      line-height: 1.12;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .instruction {
+      margin-top: 19px;
+      color: #d31822;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+
+    .buttons {
+      display: grid;
+      gap: 11px;
+      margin-top: 23px;
+    }
+
+    button {
+      width: 100%;
+      border: 4px solid #000;
+      border-radius: 17px;
+      padding: 16px 14px;
+      font-size: 19px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #000;
+    }
+
+    button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .start-button {
+      background: #111;
+      color: white;
+      font-size: 22px;
+    }
+
+    .success-button {
+      background: #22c55e;
+      color: #07120b;
+    }
+
+    .fail-button {
+      background: #ef4444;
+      color: white;
+    }
+
+    .next-team-button {
+      background: #ffc400;
+      color: #111;
+      font-size: 21px;
+    }
+
+    .restart-button {
+      background: #111;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .result-card {
+      background: white;
+      color: #111;
+      border: 6px solid #000;
+      border-radius: 30px;
+      padding: 26px 20px;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .result-title {
+      font-size: 31px;
+      font-weight: 900;
+      margin-bottom: 22px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .team-score {
+      border: 4px solid #111;
+      border-radius: 19px;
+      padding: 17px 8px;
+      background: #f6f6f6;
+    }
+
+    .team-score-name {
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .team-score-number {
+      font-size: 49px;
+      font-weight: 900;
+      color: #1725a1;
+    }
+
+    .winner {
+      background: #ddf8df;
+      border: 3px solid #19843b;
+      color: #12672d;
+      border-radius: 17px;
+      padding: 16px;
+      font-size: 23px;
+      line-height: 1.3;
+      font-weight: 900;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <div class="title">😂 WRONG ANSWERS ONLY</div>
+
+    <div class="subtitle">
+      Answer every question incorrectly — as fast as you can!
+    </div>
+
+    <section id="gameArea">
+      <div class="top-bar">
+        <div class="status-box">
+          <div class="status-label">TIME</div>
+          <div id="timerDisplay" class="status-value">60</div>
+        </div>
+
+        <div class="status-box">
+          <div class="status-label">SCORE</div>
+          <div id="scoreDisplay" class="status-value">0</div>
+        </div>
+      </div>
+
+      <section class="game-card">
+        <div id="teamLabel" class="team-label">TEAM 1</div>
+
+        <div id="question" class="question">
+          Press START when your team is ready!
+        </div>
+
+        <div id="instruction" class="instruction">
+          The answer must be completely wrong.
+        </div>
+      </section>
+
+      <div class="buttons">
+        <button id="startButton" class="start-button" type="button">
+          START TEAM 1
+        </button>
+
+        <button
+          id="successButton"
+          class="success-button hidden"
+          type="button"
+        >
+          ✅ WRONG ANSWER! +1
+        </button>
+
+        <button
+          id="failButton"
+          class="fail-button hidden"
+          type="button"
+        >
+          ❌ OOPS! THEY WERE RIGHT
+        </button>
+
+        <button
+          id="nextTeamButton"
+          class="next-team-button hidden"
+          type="button"
+        >
+          START TEAM 2
+        </button>
+      </div>
+    </section>
+
+    <section id="resultArea" class="result-card hidden">
+      <div class="result-title">🏆 FINAL SCORE</div>
+
+      <div class="score-grid">
+        <div class="team-score">
+          <div class="team-score-name">TEAM 1</div>
+          <div id="team1Result" class="team-score-number">0</div>
+        </div>
+
+        <div class="team-score">
+          <div class="team-score-name">TEAM 2</div>
+          <div id="team2Result" class="team-score-number">0</div>
+        </div>
+      </div>
+
+      <div id="winnerMessage" class="winner"></div>
+
+      <div class="buttons">
+        <button id="restartButton" class="restart-button" type="button">
+          PLAY AGAIN
+        </button>
+      </div>
+    </section>
+
+    <div class="footer">
+      © 2026 FUNMIGO. ALL RIGHTS RESERVED.
+    </div>
+  </main>
+
+  <script>
+    const questions = [
+      "What color is the sky?",
+      "How many days are in a week?",
+      "How many months are in a year?",
+      "What animal says moo?",
+      "What do bees make?",
+      "What fruit is usually yellow?",
+      "How many wheels does a bicycle have?",
+      "What planet do we live on?",
+      "What do you wear on your feet?",
+      "What do you use to brush your teeth?",
+      "How many legs does a spider have?",
+      "What shape is a basketball?",
+      "What comes after Monday?",
+      "What comes before Friday?",
+      "What do you sleep on?",
+      "What color is grass?",
+      "What animal says meow?",
+      "What do chickens lay?",
+      "How many fingers are on one hand?",
+      "What do you drink water from?",
+      "What season comes after summer?",
+      "What season comes after winter?",
+      "What color is snow?",
+      "What do fish swim in?",
+      "What do birds use to fly?",
+      "How many hours are in a day?",
+      "How many minutes are in an hour?",
+      "What do you use to cut paper?",
+      "What room do you cook in?",
+      "What room do you sleep in?",
+      "What do you use to unlock a door?",
+      "What color is a stop sign?",
+      "What number comes after five?",
+      "What number comes before ten?",
+      "How many sides does a triangle have?",
+      "How many sides does a square have?",
+      "What do cows produce?",
+      "What animal has a long trunk?",
+      "What animal is known as the king of the jungle?",
+      "What do you use to write on paper?",
+      "What do you wear when it rains?",
+      "What shines during the day?",
+      "What shines in the sky at night?",
+      "What do you call frozen water?",
+      "What do you call a baby dog?",
+      "What do you call a baby cat?",
+      "What color is a typical strawberry?",
+      "What color is a typical orange?",
+      "What do you use to call someone?",
+      "What do you use to take a photo?",
+      "What meal do you eat in the morning?",
+      "What meal do you eat at night?",
+      "What do you use to wash your hair?",
+      "What do you use to dry yourself?",
+      "What do you sit on?",
+      "What do you wear on your head?",
+      "How many eyes does a person usually have?",
+      "How many ears does a person usually have?",
+      "What do you smell with?",
+      "What do you hear with?",
+      "What do you see with?",
+      "What do you taste with?",
+      "What do you use to clap?",
+      "What color are most clouds?",
+      "What animal gives us wool?",
+      "What animal gives us eggs?",
+      "What sound does a dog make?",
+      "What sound does a duck make?",
+      "Which animal is black and white with stripes?",
+      "Which animal carries its baby in a pouch?",
+      "Which animal has a very long neck?",
+      "How many legs does a dog have?",
+      "How many legs does a bird have?",
+      "What do you use to sweep the floor?",
+      "What do you use to clean your teeth?",
+      "What do you open with a key?",
+      "Where do airplanes fly?",
+      "Where do boats travel?",
+      "Where do cars drive?",
+      "What color means go at a traffic light?",
+      "What color means stop at a traffic light?",
+      "What do you call water falling from the sky?",
+      "What do you call a house made of ice?",
+      "What do you put on a birthday cake?",
+      "What do you blow out on your birthday?",
+      "What holiday has a Christmas tree?",
+      "What holiday has pumpkins?",
+      "What do you wear to see better?",
+      "What do you use to tell the time?",
+      "How many letters are in the English alphabet?",
+      "What is the first letter of the alphabet?",
+      "What is the last letter of the alphabet?",
+      "Which number comes after nine?",
+      "Which number comes before three?",
+      "What do you call seven days?",
+      "What do you call twelve months?",
+      "What do you use to eat soup?",
+      "What do you use to eat steak?",
+      "What do you use to drink coffee?",
+      "What do you put inside a toaster?"
+    ];
+
+    const timerDisplay = document.getElementById("timerDisplay");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const teamLabel = document.getElementById("teamLabel");
+    const questionDisplay = document.getElementById("question");
+    const instruction = document.getElementById("instruction");
+
+    const startButton = document.getElementById("startButton");
+    const successButton = document.getElementById("successButton");
+    const failButton = document.getElementById("failButton");
+    const nextTeamButton = document.getElementById("nextTeamButton");
+
+    const gameArea = document.getElementById("gameArea");
+    const resultArea = document.getElementById("resultArea");
+    const team1Result = document.getElementById("team1Result");
+    const team2Result = document.getElementById("team2Result");
+    const winnerMessage = document.getElementById("winnerMessage");
+    const restartButton = document.getElementById("restartButton");
+
+    let currentTeam = 1;
+    let teamScores = [0, 0];
+    let timeLeft = 60;
+    let timerInterval = null;
+    let gameRunning = false;
+    let questionOrder = [];
+    let questionPosition = 0;
+
+    function shuffleArray(array) {
+      const shuffled = [...array];
+
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[randomIndex]] =
+          [shuffled[randomIndex], shuffled[i]];
+      }
+
+      return shuffled;
+    }
+
+    function prepareQuestions() {
+      questionOrder = shuffleArray(questions);
+      questionPosition = 0;
+    }
+
+    function showNextQuestion() {
+      if (questionPosition >= questionOrder.length) {
+        prepareQuestions();
+      }
+
+      questionDisplay.textContent =
+        questionOrder[questionPosition];
+
+      questionPosition += 1;
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent =
+        teamScores[currentTeam - 1];
+    }
+
+    function setGameButtons(active) {
+      successButton.classList.toggle("hidden", !active);
+      failButton.classList.toggle("hidden", !active);
+
+      successButton.disabled = !active;
+      failButton.disabled = !active;
+    }
+
+    function startRound() {
+      if (gameRunning) {
+        return;
+      }
+
+      gameRunning = true;
+      timeLeft = 60;
+
+      timerDisplay.textContent = timeLeft;
+      updateScore();
+
+      startButton.classList.add("hidden");
+      nextTeamButton.classList.add("hidden");
+      setGameButtons(true);
+
+      instruction.textContent =
+        "Answer incorrectly — quickly!";
+
+      prepareQuestions();
+      showNextQuestion();
+
+      timerInterval = setInterval(() => {
+        timeLeft -= 1;
+        timerDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          endRound();
+        }
+      }, 1000);
+    }
+
+    function registerSuccessfulWrongAnswer() {
+      if (!gameRunning) {
+        return;
+      }
+
+      teamScores[currentTeam - 1] += 1;
+      updateScore();
+      showNextQuestion();
+
+      navigator.vibrate?.(50);
+    }
+
+    function registerCorrectAnswerMistake() {
+      if (!gameRunning) {
+        return;
+      }
+
+      showNextQuestion();
+      navigator.vibrate?.(120);
+    }
+
+    function endRound() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      gameRunning = false;
+
+      timerDisplay.textContent = "0";
+      setGameButtons(false);
+
+      questionDisplay.textContent = "TIME'S UP!";
+      instruction.textContent =
+        `Team ${currentTeam} scored ${teamScores[currentTeam - 1]} points.`;
+
+      navigator.vibrate?.([300, 150, 300]);
+
+      if (currentTeam === 1) {
+        currentTeam = 2;
+
+        nextTeamButton.classList.remove("hidden");
+        teamLabel.textContent = "TEAM 2";
+        scoreDisplay.textContent = "0";
+        timerDisplay.textContent = "60";
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      gameArea.classList.add("hidden");
+      resultArea.classList.remove("hidden");
+
+      team1Result.textContent = teamScores[0];
+      team2Result.textContent = teamScores[1];
+
+      if (teamScores[0] > teamScores[1]) {
+        winnerMessage.textContent =
+          "🎉 TEAM 1 WINS!";
+      } else if (teamScores[1] > teamScores[0]) {
+        winnerMessage.textContent =
+          "🎉 TEAM 2 WINS!";
+      } else {
+        winnerMessage.textContent =
+          "🤝 IT'S A TIE!";
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function resetGame() {
+      clearInterval(timerInterval);
+
+      currentTeam = 1;
+      teamScores = [0, 0];
+      timeLeft = 60;
+      gameRunning = false;
+
+      timerDisplay.textContent = "60";
+      scoreDisplay.textContent = "0";
+      teamLabel.textContent = "TEAM 1";
+
+      questionDisplay.textContent =
+        "Press START when your team is ready!";
+
+      instruction.textContent =
+        "The answer must be completely wrong.";
+
+      startButton.textContent = "START TEAM 1";
+      startButton.classList.remove("hidden");
+
+      nextTeamButton.classList.add("hidden");
+      setGameButtons(false);
+
+      resultArea.classList.add("hidden");
+      gameArea.classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    startButton.addEventListener("click", startRound);
+    nextTeamButton.addEventListener("click", startRound);
+
+    successButton.addEventListener(
+      "click",
+      registerSuccessfulWrongAnswer
+    );
+
+    failButton.addEventListener(
+      "click",
+      registerCorrectAnswerMistake
+    );
+
+    restartButton.addEventListener("click", resetGame);
+
+    resetGame();
+  </script>
+</body>
+</html>
