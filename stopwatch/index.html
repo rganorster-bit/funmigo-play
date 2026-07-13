@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Funmigo Stopwatch</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(255, 255, 255, 0.08) 0 2px,
+          transparent 3px
+        ),
+        linear-gradient(135deg, #ad0008, #e31b23);
+
+      background-size: 28px 28px, auto;
+    }
+
+    .stopwatch-card {
+      width: 100%;
+      max-width: 500px;
+
+      padding: 30px 22px;
+
+      text-align: center;
+      background: #fff8e8;
+
+      border: 6px solid #ffffff;
+      outline: 5px solid #111111;
+      border-radius: 28px;
+
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .logo {
+      margin-bottom: 8px;
+
+      font-size: clamp(38px, 10vw, 58px);
+      font-weight: 1000;
+      letter-spacing: -2px;
+
+      color: #ffffff;
+      -webkit-text-stroke: 2px #111111;
+      text-shadow: 4px 4px 0 #111111;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    h1 {
+      margin: 10px 0 5px;
+
+      font-size: clamp(30px, 8vw, 46px);
+      font-weight: 1000;
+      line-height: 1;
+
+      color: #111111;
+    }
+
+    .subtitle {
+      margin: 10px 0 25px;
+
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .time-display {
+      margin: 25px 0;
+      padding: 25px 10px;
+
+      font-family: "Courier New", monospace;
+      font-size: clamp(54px, 15vw, 88px);
+      font-weight: 1000;
+      letter-spacing: -5px;
+
+      color: #111111;
+      background: #ffffff;
+
+      border: 5px solid #111111;
+      border-radius: 22px;
+
+      box-shadow: 0 8px 0 #111111;
+    }
+
+    .milliseconds {
+      color: #e31b23;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+
+      margin-top: 28px;
+    }
+
+    button {
+      padding: 18px 10px;
+
+      font-size: 21px;
+      font-weight: 1000;
+
+      border: 4px solid #111111;
+      border-radius: 16px;
+
+      box-shadow: 0 7px 0 #111111;
+      cursor: pointer;
+
+      transition:
+        transform 0.08s ease,
+        box-shadow 0.08s ease;
+    }
+
+    button:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #111111;
+    }
+
+    #startStopButton {
+      color: #ffffff;
+      background: #18a84a;
+    }
+
+    #resetButton {
+      color: #111111;
+      background: #ffc400;
+    }
+
+    .instruction {
+      margin-top: 24px;
+      padding: 14px;
+
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+
+      color: #ffffff;
+      background: #111111;
+
+      border-radius: 15px;
+    }
+
+    .instruction strong {
+      color: #ffc400;
+    }
+
+    .footer {
+      margin-top: 18px;
+
+      font-size: 17px;
+      font-weight: 1000;
+    }
+
+    .footer span {
+      color: #e31b23;
+    }
+
+    @media (max-width: 420px) {
+      .stopwatch-card {
+        padding: 25px 14px;
+      }
+
+      .time-display {
+        padding: 22px 5px;
+        letter-spacing: -4px;
+      }
+
+      button {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="stopwatch-card">
+
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <h1>STOPWATCH</h1>
+
+    <p class="subtitle">
+      Complete the challenge as fast as possible!
+    </p>
+
+    <div class="time-display" aria-live="polite">
+      <span id="minutes">00</span>:<span id="seconds">00</span><span class="milliseconds">.<span id="centiseconds">00</span></span>
+    </div>
+
+    <div class="buttons">
+
+      <button id="startStopButton" type="button">
+        START
+      </button>
+
+      <button id="resetButton" type="button">
+        RESET
+      </button>
+
+    </div>
+
+    <div class="instruction">
+      Press <strong>START</strong> when the challenge begins
+      and <strong>STOP</strong> when the team finishes.
+    </div>
+
+    <div class="footer">
+      FASTEST TEAM <span>WINS!</span>
+    </div>
+
+  </main>
+
+  <script>
+    const minutesElement =
+      document.getElementById("minutes");
+
+    const secondsElement =
+      document.getElementById("seconds");
+
+    const centisecondsElement =
+      document.getElementById("centiseconds");
+
+    const startStopButton =
+      document.getElementById("startStopButton");
+
+    const resetButton =
+      document.getElementById("resetButton");
+
+    let startTime = 0;
+    let elapsedTime = 0;
+    let animationFrameId = null;
+    let isRunning = false;
+
+    function formatNumber(number) {
+      return String(number).padStart(2, "0");
+    }
+
+    function updateDisplay() {
+      const totalCentiseconds =
+        Math.floor(elapsedTime / 10);
+
+      const minutes =
+        Math.floor(totalCentiseconds / 6000);
+
+      const seconds =
+        Math.floor(
+          (totalCentiseconds % 6000) / 100
+        );
+
+      const centiseconds =
+        totalCentiseconds % 100;
+
+      minutesElement.textContent =
+        formatNumber(minutes);
+
+      secondsElement.textContent =
+        formatNumber(seconds);
+
+      centisecondsElement.textContent =
+        formatNumber(centiseconds);
+    }
+
+    function runStopwatch(currentTime) {
+      elapsedTime =
+        currentTime - startTime;
+
+      updateDisplay();
+
+      animationFrameId =
+        requestAnimationFrame(runStopwatch);
+    }
+
+    function startStopwatch() {
+      startTime =
+        performance.now() - elapsedTime;
+
+      animationFrameId =
+        requestAnimationFrame(runStopwatch);
+
+      isRunning = true;
+
+      startStopButton.textContent = "STOP";
+      startStopButton.style.background = "#e31b23";
+    }
+
+    function stopStopwatch() {
+      cancelAnimationFrame(animationFrameId);
+
+      isRunning = false;
+
+      startStopButton.textContent = "CONTINUE";
+      startStopButton.style.background = "#18a84a";
+    }
+
+    function resetStopwatch() {
+      cancelAnimationFrame(animationFrameId);
+
+      isRunning = false;
+      elapsedTime = 0;
+
+      updateDisplay();
+
+      startStopButton.textContent = "START";
+      startStopButton.style.background = "#18a84a";
+    }
+
+    startStopButton.addEventListener(
+      "click",
+      function () {
+        if (isRunning) {
+          stopStopwatch();
+        } else {
+          startStopwatch();
+        }
+      }
+    );
+
+    resetButton.addEventListener(
+      "click",
+      resetStopwatch
+    );
+
+    updateDisplay();
+  </script>
+
+</body>
+</html>
