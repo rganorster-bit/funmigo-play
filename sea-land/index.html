@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FUNMIGO - Sea or Land</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #1f9fe8 0%, #0758a7 52%, #032d61 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 0 #000;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    .title {
+      font-size: 27px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      text-shadow: 0 3px 0 #000;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 800;
+      margin-bottom: 22px;
+    }
+
+    .status-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .status-box {
+      background: #111;
+      border: 4px solid white;
+      border-radius: 16px;
+      padding: 11px;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .status-label {
+      color: #ffc400;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .status-value {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .command-card {
+      min-height: 310px;
+      background: white;
+      color: #111;
+      border: 6px solid #000;
+      border-radius: 34px;
+      padding: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 13px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .command-card.pop {
+      animation: pop 0.18s ease;
+    }
+
+    .command {
+      font-size: clamp(80px, 24vw, 140px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -4px;
+    }
+
+    .sea {
+      color: #087ec1;
+    }
+
+    .land {
+      color: #149447;
+    }
+
+    .ready {
+      color: #111;
+      font-size: clamp(48px, 14vw, 78px);
+    }
+
+    .buttons {
+      display: grid;
+      gap: 12px;
+      margin-top: 27px;
+    }
+
+    button {
+      width: 100%;
+      border: 4px solid #000;
+      border-radius: 18px;
+      padding: 17px 20px;
+      font-size: 21px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #000;
+    }
+
+    button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+
+    .start-button {
+      background: #ffc400;
+      color: #111;
+    }
+
+    .stop-button {
+      background: #ef4444;
+      color: white;
+    }
+
+    .reset-button {
+      background: #111;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .rule {
+      margin-top: 20px;
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .footer {
+      margin-top: 27px;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0.88);
+      }
+
+      70% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <div class="title">🌊 SEA OR LAND</div>
+
+    <div class="subtitle">
+      Listen carefully. Move fast. Last player standing wins!
+    </div>
+
+    <div class="status-bar">
+      <div class="status-box">
+        <div class="status-label">PACE</div>
+        <div id="paceDisplay" class="status-value">READY</div>
+      </div>
+
+      <div class="status-box">
+        <div class="status-label">CALLS</div>
+        <div id="callDisplay" class="status-value">0</div>
+      </div>
+    </div>
+
+    <section id="commandCard" class="command-card">
+      <div id="commandDisplay" class="command ready">
+        READY?
+      </div>
+    </section>
+
+    <div class="buttons">
+      <button id="startButton" class="start-button" type="button">
+        START GAME
+      </button>
+
+      <button id="stopButton" class="stop-button hidden" type="button">
+        STOP
+      </button>
+
+      <button id="resetButton" class="reset-button hidden" type="button">
+        PLAY AGAIN
+      </button>
+    </div>
+
+    <div class="rule">
+      SEA = jump inside. LAND = jump outside.<br />
+      Wrong move or hesitation? You’re out!
+    </div>
+
+    <div class="footer">
+      © 2026 FUNMIGO. ALL RIGHTS RESERVED.
+    </div>
+  </main>
+
+  <script>
+    const commandDisplay =
+      document.getElementById("commandDisplay");
+
+    const commandCard =
+      document.getElementById("commandCard");
+
+    const paceDisplay =
+      document.getElementById("paceDisplay");
+
+    const callDisplay =
+      document.getElementById("callDisplay");
+
+    const startButton =
+      document.getElementById("startButton");
+
+    const stopButton =
+      document.getElementById("stopButton");
+
+    const resetButton =
+      document.getElementById("resetButton");
+
+    const phases = [
+      {
+        name: "MEDIUM",
+        calls: 10,
+        minDelay: 1050,
+        maxDelay: 1450,
+        voiceRate: 1.0
+      },
+      {
+        name: "FAST",
+        calls: 14,
+        minDelay: 650,
+        maxDelay: 900,
+        voiceRate: 1.25
+      },
+      {
+        name: "MEDIUM",
+        calls: 8,
+        minDelay: 950,
+        maxDelay: 1250,
+        voiceRate: 1.05
+      },
+      {
+        name: "VERY FAST",
+        calls: Infinity,
+        minDelay: 380,
+        maxDelay: 590,
+        voiceRate: 1.6
+      }
+    ];
+
+    let gameRunning = false;
+    let timeoutId = null;
+    let phaseIndex = 0;
+    let callsInsidePhase = 0;
+    let totalCalls = 0;
+
+    let previousCommand = "";
+    let sameCommandCount = 0;
+
+    function randomBetween(min, max) {
+      return Math.floor(
+        Math.random() * (max - min + 1)
+      ) + min;
+    }
+
+    function chooseCommand() {
+      let command =
+        Math.random() < 0.5 ? "SEA" : "LAND";
+
+      if (
+        command === previousCommand &&
+        sameCommandCount >= 2
+      ) {
+        command =
+          command === "SEA" ? "LAND" : "SEA";
+      }
+
+      if (command === previousCommand) {
+        sameCommandCount += 1;
+      } else {
+        sameCommandCount = 1;
+      }
+
+      previousCommand = command;
+
+      return command;
+    }
+
+    function speakCommand(command, rate) {
+      if (!("speechSynthesis" in window)) {
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const utterance =
+        new SpeechSynthesisUtterance(command);
+
+      utterance.lang = "en-US";
+      utterance.rate = rate;
+      utterance.pitch = 1.05;
+      utterance.volume = 1;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function animateCard() {
+      commandCard.classList.remove("pop");
+
+      void commandCard.offsetWidth;
+
+      commandCard.classList.add("pop");
+    }
+
+    function showCommand() {
+      if (!gameRunning) {
+        return;
+      }
+
+      const currentPhase = phases[phaseIndex];
+      const command = chooseCommand();
+
+      commandDisplay.textContent = command;
+      commandDisplay.className =
+        `command ${command.toLowerCase()}`;
+
+      paceDisplay.textContent = currentPhase.name;
+
+      totalCalls += 1;
+      callsInsidePhase += 1;
+
+      callDisplay.textContent = totalCalls;
+
+      animateCard();
+      speakCommand(command, currentPhase.voiceRate);
+
+      navigator.vibrate?.(40);
+
+      if (
+        callsInsidePhase >= currentPhase.calls &&
+        phaseIndex < phases.length - 1
+      ) {
+        phaseIndex += 1;
+        callsInsidePhase = 0;
+      }
+
+      const nextPhase = phases[phaseIndex];
+
+      const delay = randomBetween(
+        nextPhase.minDelay,
+        nextPhase.maxDelay
+      );
+
+      timeoutId = setTimeout(showCommand, delay);
+    }
+
+    function startGame() {
+      if (gameRunning) {
+        return;
+      }
+
+      gameRunning = true;
+      phaseIndex = 0;
+      callsInsidePhase = 0;
+      totalCalls = 0;
+      previousCommand = "";
+      sameCommandCount = 0;
+
+      callDisplay.textContent = "0";
+      paceDisplay.textContent = "GET READY";
+
+      startButton.classList.add("hidden");
+      resetButton.classList.add("hidden");
+      stopButton.classList.remove("hidden");
+
+      commandDisplay.textContent = "3";
+      commandDisplay.className = "command ready";
+
+      let countdown = 3;
+
+      const countdownInterval = setInterval(() => {
+        countdown -= 1;
+
+        if (countdown > 0) {
+          commandDisplay.textContent = countdown;
+        } else {
+          clearInterval(countdownInterval);
+
+          commandDisplay.textContent = "GO!";
+          speakCommand("Go", 1.1);
+
+          setTimeout(showCommand, 650);
+        }
+      }, 700);
+    }
+
+    function stopGame() {
+      gameRunning = false;
+
+      clearTimeout(timeoutId);
+      window.speechSynthesis?.cancel();
+
+      commandDisplay.textContent = "GAME OVER";
+      commandDisplay.className = "command ready";
+
+      paceDisplay.textContent = "STOPPED";
+
+      stopButton.classList.add("hidden");
+      resetButton.classList.remove("hidden");
+
+      navigator.vibrate?.([250, 100, 250]);
+    }
+
+    function resetGame() {
+      clearTimeout(timeoutId);
+      window.speechSynthesis?.cancel();
+
+      gameRunning = false;
+      phaseIndex = 0;
+      callsInsidePhase = 0;
+      totalCalls = 0;
+      previousCommand = "";
+      sameCommandCount = 0;
+
+      commandDisplay.textContent = "READY?";
+      commandDisplay.className = "command ready";
+
+      paceDisplay.textContent = "READY";
+      callDisplay.textContent = "0";
+
+      startButton.classList.remove("hidden");
+      stopButton.classList.add("hidden");
+      resetButton.classList.add("hidden");
+    }
+
+    startButton.addEventListener("click", startGame);
+    stopButton.addEventListener("click", stopGame);
+    resetButton.addEventListener("click", resetGame);
+  </script>
+</body>
+</html>
