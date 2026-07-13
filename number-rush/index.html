@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Funmigo Number Rush</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(255, 255, 255, 0.08) 0 2px,
+          transparent 3px
+        ),
+        linear-gradient(135deg, #004aa8, #1575d1);
+
+      background-size: 28px 28px, auto;
+      color: #111111;
+    }
+
+    .game-card {
+      width: 100%;
+      max-width: 620px;
+      padding: 28px 22px;
+
+      text-align: center;
+      background: #fff8e8;
+
+      border: 6px solid #ffffff;
+      outline: 5px solid #111111;
+      border-radius: 28px;
+
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .logo {
+      margin-bottom: 6px;
+
+      font-size: clamp(36px, 10vw, 56px);
+      font-weight: 1000;
+      letter-spacing: -2px;
+
+      color: #ffffff;
+      -webkit-text-stroke: 2px #111111;
+      text-shadow: 4px 4px 0 #111111;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    h1 {
+      margin: 12px 0 6px;
+
+      font-size: clamp(32px, 8vw, 48px);
+      font-weight: 1000;
+      line-height: 1;
+
+      color: #111111;
+    }
+
+    .subtitle {
+      margin: 8px 0 22px;
+
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .timer-box {
+      width: min(220px, 70%);
+      margin: 0 auto 22px;
+      padding: 12px 10px;
+
+      background: #111111;
+      color: #ffffff;
+
+      border-radius: 16px;
+
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    .timer-box span {
+      color: #ffc400;
+      font-size: 28px;
+    }
+
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+
+      margin: 0 auto 24px;
+    }
+
+    .number-box {
+      aspect-ratio: 1 / 1;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background: #ffffff;
+      border: 4px solid #111111;
+      border-radius: 16px;
+
+      box-shadow: 0 6px 0 #111111;
+
+      font-size: clamp(24px, 6vw, 38px);
+      font-weight: 1000;
+      color: #1575d1;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message-box {
+      margin: 18px 0 24px;
+      padding: 26px 18px;
+
+      background: #ffffff;
+      border: 4px solid #111111;
+      border-radius: 18px;
+
+      box-shadow: 0 7px 0 #111111;
+
+      font-size: clamp(23px, 6vw, 34px);
+      font-weight: 1000;
+      line-height: 1.2;
+    }
+
+    button {
+      width: 100%;
+      padding: 17px 14px;
+
+      font-size: 21px;
+      font-weight: 1000;
+
+      color: #111111;
+      background: #ffc400;
+
+      border: 4px solid #111111;
+      border-radius: 17px;
+
+      box-shadow: 0 7px 0 #111111;
+      cursor: pointer;
+
+      transition:
+        transform 0.08s ease,
+        box-shadow 0.08s ease;
+    }
+
+    button:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #111111;
+    }
+
+    .rules {
+      margin-top: 22px;
+      padding: 14px;
+
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.45;
+
+      color: #ffffff;
+      background: #111111;
+
+      border-radius: 15px;
+    }
+
+    .rules strong {
+      color: #ffc400;
+    }
+
+    .footer {
+      margin-top: 18px;
+
+      font-size: 17px;
+      font-weight: 1000;
+    }
+
+    .footer span {
+      color: #1575d1;
+    }
+
+    @media (max-width: 520px) {
+      .game-card {
+        padding: 24px 14px;
+      }
+
+      .numbers-grid {
+        gap: 8px;
+      }
+
+      .number-box {
+        border-width: 3px;
+        border-radius: 13px;
+        box-shadow: 0 5px 0 #111111;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="game-card">
+
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <h1>NUMBER RUSH</h1>
+
+    <p class="subtitle">
+      Memorize as many numbers as possible before time runs out
+    </p>
+
+    <div id="timerBox" class="timer-box hidden">
+      TIME LEFT:
+      <span id="timer">10</span>
+    </div>
+
+    <section id="numbersGrid" class="numbers-grid hidden"></section>
+
+    <div id="readyMessage" class="message-box">
+      Press the button when the team is ready
+    </div>
+
+    <div id="timeUpMessage" class="message-box hidden">
+      TIME’S UP!<br>
+      Write down every number you remember
+    </div>
+
+    <button id="actionButton" type="button">
+      REVEAL NUMBERS
+    </button>
+
+    <div class="rules">
+      <strong>+1 point</strong> for every correct number<br>
+      <strong>-1 point</strong> for every incorrect number
+    </div>
+
+    <div class="footer">
+      LET’S <span>FUNMIGO!</span>
+    </div>
+
+  </main>
+
+  <script>
+    const numbersGrid =
+      document.getElementById("numbersGrid");
+
+    const timerBox =
+      document.getElementById("timerBox");
+
+    const timerElement =
+      document.getElementById("timer");
+
+    const readyMessage =
+      document.getElementById("readyMessage");
+
+    const timeUpMessage =
+      document.getElementById("timeUpMessage");
+
+    const actionButton =
+      document.getElementById("actionButton");
+
+    let countdownInterval = null;
+    let gameState = "ready";
+
+    function generateUniqueNumbers() {
+      const numbers = new Set();
+
+      while (numbers.size < 12) {
+        const randomNumber =
+          Math.floor(Math.random() * 889) + 111;
+
+        numbers.add(randomNumber);
+      }
+
+      return Array.from(numbers);
+    }
+
+    function displayNumbers(numbers) {
+      numbersGrid.innerHTML = "";
+
+      numbers.forEach(function(number) {
+        const numberBox =
+          document.createElement("div");
+
+        numberBox.className = "number-box";
+        numberBox.textContent = number;
+
+        numbersGrid.appendChild(numberBox);
+      });
+    }
+
+    function startRound() {
+      const numbers = generateUniqueNumbers();
+
+      displayNumbers(numbers);
+
+      readyMessage.classList.add("hidden");
+      timeUpMessage.classList.add("hidden");
+
+      numbersGrid.classList.remove("hidden");
+      timerBox.classList.remove("hidden");
+
+      actionButton.disabled = true;
+      actionButton.textContent = "MEMORIZE!";
+
+      let timeLeft = 10;
+      timerElement.textContent = timeLeft;
+
+      gameState = "running";
+
+      countdownInterval = setInterval(function() {
+        timeLeft -= 1;
+        timerElement.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          endRound();
+        }
+      }, 1000);
+    }
+
+    function endRound() {
+      clearInterval(countdownInterval);
+
+      numbersGrid.classList.add("hidden");
+      timerBox.classList.add("hidden");
+
+      timeUpMessage.classList.remove("hidden");
+
+      actionButton.disabled = false;
+      actionButton.textContent = "NEW ROUND";
+
+      gameState = "finished";
+    }
+
+    function resetRound() {
+      clearInterval(countdownInterval);
+
+      numbersGrid.classList.add("hidden");
+      timerBox.classList.add("hidden");
+      timeUpMessage.classList.add("hidden");
+
+      readyMessage.classList.remove("hidden");
+
+      actionButton.textContent = "REVEAL NUMBERS";
+
+      gameState = "ready";
+    }
+
+    actionButton.addEventListener(
+      "click",
+      function() {
+        if (gameState === "ready") {
+          startRound();
+        } else if (gameState === "finished") {
+          resetRound();
+        }
+      }
+    );
+  </script>
+
+</body>
+</html>
