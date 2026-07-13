@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Funmigo – From A to Z</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(255, 255, 255, 0.08) 0 2px,
+          transparent 3px
+        ),
+        linear-gradient(135deg, #ad0008, #e31b23);
+
+      background-size: 28px 28px, auto;
+    }
+
+    .game-card {
+      width: 100%;
+      max-width: 480px;
+
+      padding: 28px 22px;
+
+      text-align: center;
+      background: #fff8e8;
+
+      border: 6px solid white;
+      outline: 5px solid #111;
+      border-radius: 28px;
+
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .logo {
+      margin-bottom: 5px;
+
+      font-size: clamp(36px, 10vw, 55px);
+      font-weight: 1000;
+      letter-spacing: -2px;
+
+      color: white;
+      -webkit-text-stroke: 2px #111;
+      text-shadow: 4px 4px 0 #111;
+    }
+
+    .logo span {
+      color: #ffc400;
+    }
+
+    h1 {
+      margin: 12px 0 5px;
+
+      font-size: clamp(30px, 8vw, 46px);
+      font-weight: 1000;
+      line-height: 1;
+
+      color: #111;
+    }
+
+    .subtitle {
+      margin: 8px 0 25px;
+
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .letters-area {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+
+      margin: 25px 0;
+    }
+
+    .letter-box {
+      padding: 18px 6px;
+
+      background: white;
+      border: 4px solid #111;
+      border-radius: 22px;
+
+      box-shadow: 0 7px 0 #111;
+    }
+
+    .letter-label {
+      margin-bottom: 8px;
+
+      font-size: 14px;
+      font-weight: 1000;
+    }
+
+    .letter {
+      font-size: clamp(75px, 22vw, 110px);
+      font-weight: 1000;
+      line-height: 0.9;
+    }
+
+    .start-letter {
+      color: #e31b23;
+    }
+
+    .end-letter {
+      color: #f2b600;
+    }
+
+    .arrow {
+      font-size: 40px;
+      font-weight: 1000;
+      color: #111;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 17px 12px;
+
+      font-size: 21px;
+      font-weight: 1000;
+
+      color: #111;
+      background: #ffc400;
+
+      border: 4px solid #111;
+      border-radius: 17px;
+
+      box-shadow: 0 7px 0 #111;
+      cursor: pointer;
+
+      transition:
+        transform 0.08s ease,
+        box-shadow 0.08s ease;
+    }
+
+    button:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #111;
+    }
+
+    .instructions {
+      margin-top: 22px;
+      padding: 14px;
+
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+
+      color: white;
+      background: #111;
+
+      border-radius: 15px;
+    }
+
+    .instructions strong {
+      color: #ffc400;
+    }
+
+    .footer {
+      margin-top: 18px;
+
+      font-size: 16px;
+      font-weight: 1000;
+    }
+
+    .footer span {
+      color: #e31b23;
+    }
+
+    @media (max-width: 400px) {
+      .game-card {
+        padding: 24px 14px;
+      }
+
+      .letters-area {
+        gap: 7px;
+      }
+
+      .letter-box {
+        padding: 16px 3px;
+      }
+
+      .arrow {
+        font-size: 29px;
+      }
+
+      .letter-label {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="game-card">
+
+    <div class="logo">
+      FUN<span>MIGO</span>
+    </div>
+
+    <h1>FROM A TO Z!</h1>
+
+    <p class="subtitle">
+      Find 5 words using the selected letters
+    </p>
+
+    <section class="letters-area" aria-live="polite">
+
+      <div class="letter-box">
+        <div class="letter-label">START LETTER</div>
+        <div id="startLetter" class="letter start-letter">A</div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="letter-box">
+        <div class="letter-label">END LETTER</div>
+        <div id="endLetter" class="letter end-letter">E</div>
+      </div>
+
+    </section>
+
+    <button id="newLettersButton" type="button">
+      🎲 GET 2 NEW LETTERS
+    </button>
+
+    <div class="instructions">
+      Find 5 words that <strong>start</strong> with the first letter
+      and <strong>end</strong> with the second letter.
+    </div>
+
+    <div class="footer">
+      LET’S <span>FUNMIGO!</span>
+    </div>
+
+  </main>
+
+  <script>
+    /*
+      Curated combinations only.
+
+      Each combination was selected because there are multiple
+      common English words that match it.
+    */
+
+    const validLetterPairs = [
+      ["A", "E"],
+      ["A", "N"],
+      ["A", "R"],
+      ["A", "T"],
+
+      ["B", "D"],
+      ["B", "E"],
+      ["B", "K"],
+      ["B", "R"],
+
+      ["C", "D"],
+      ["C", "E"],
+      ["C", "K"],
+      ["C", "R"],
+
+      ["D", "E"],
+      ["D", "N"],
+      ["D", "R"],
+
+      ["F", "D"],
+      ["F", "E"],
+      ["F", "R"],
+
+      ["G", "D"],
+      ["G", "E"],
+      ["G", "R"],
+
+      ["H", "D"],
+      ["H", "E"],
+      ["H", "R"],
+
+      ["L", "D"],
+      ["L", "E"],
+      ["L", "R"],
+
+      ["M", "D"],
+      ["M", "E"],
+      ["M", "R"],
+
+      ["P", "D"],
+      ["P", "E"],
+      ["P", "R"],
+
+      ["S", "D"],
+      ["S", "E"],
+      ["S", "K"],
+      ["S", "R"],
+
+      ["T", "D"],
+      ["T", "E"],
+      ["T", "R"],
+
+      ["W", "D"],
+      ["W", "E"],
+      ["W", "R"]
+    ];
+
+    const startLetterElement =
+      document.getElementById("startLetter");
+
+    const endLetterElement =
+      document.getElementById("endLetter");
+
+    const newLettersButton =
+      document.getElementById("newLettersButton");
+
+    let previousPairIndex = -1;
+
+    function generateLetterPair() {
+      let newPairIndex;
+
+      /*
+        Prevent the same pair from appearing twice in a row.
+      */
+      do {
+        newPairIndex = Math.floor(
+          Math.random() * validLetterPairs.length
+        );
+      } while (
+        newPairIndex === previousPairIndex &&
+        validLetterPairs.length > 1
+      );
+
+      previousPairIndex = newPairIndex;
+
+      const selectedPair =
+        validLetterPairs[newPairIndex];
+
+      const startLetter = selectedPair[0];
+      const endLetter = selectedPair[1];
+
+      startLetterElement.textContent = startLetter;
+      endLetterElement.textContent = endLetter;
+    }
+
+    newLettersButton.addEventListener(
+      "click",
+      generateLetterPair
+    );
+
+    /*
+      Generate a pair automatically whenever
+      the QR page is opened.
+    */
+    generateLetterPair();
+  </script>
+
+</body>
+</html>
