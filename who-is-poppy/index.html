@@ -8,11 +8,12 @@
 
   <style>
     :root {
-      --purple: #5720a5;
+      --purple: #5b20a5;
       --dark-purple: #321063;
       --yellow: #ffc400;
       --red: #e31b23;
-      --green: #17a84b;
+      --green: #18a84a;
+      --blue: #1575d1;
       --cream: #fff8e8;
       --white: #ffffff;
       --black: #111111;
@@ -51,7 +52,7 @@
 
     .game-card {
       width: 100%;
-      max-width: 540px;
+      max-width: 560px;
       padding: 28px 20px;
 
       text-align: center;
@@ -122,6 +123,13 @@
 
       font-size: 22px;
       font-weight: 1000;
+      line-height: 1.2;
+    }
+
+    .panel-text {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.45;
     }
 
     .player-selector {
@@ -139,15 +147,6 @@
       font-size: 64px;
       font-weight: 1000;
       color: var(--purple);
-    }
-
-    .small-button {
-      width: 58px;
-      height: 58px;
-      padding: 0;
-
-      font-size: 34px;
-      line-height: 1;
     }
 
     button {
@@ -177,12 +176,22 @@
     }
 
     button:disabled {
-      opacity: 0.55;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .primary-button {
-      background: var(--yellow);
+    .small-button {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .purple-button {
+      color: var(--white);
+      background: var(--purple);
     }
 
     .green-button {
@@ -195,9 +204,9 @@
       background: var(--red);
     }
 
-    .purple-button {
+    .blue-button {
       color: var(--white);
-      background: var(--purple);
+      background: var(--blue);
     }
 
     .secondary-button {
@@ -205,9 +214,30 @@
       background: var(--white);
     }
 
+    .team-badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 9px 18px;
+
+      color: var(--white);
+      border: 3px solid var(--black);
+      border-radius: 999px;
+
+      font-size: 18px;
+      font-weight: 1000;
+    }
+
+    .team-a {
+      background: var(--red);
+    }
+
+    .team-b {
+      background: var(--blue);
+    }
+
     .player-progress {
       display: inline-block;
-      margin-bottom: 14px;
+      margin-bottom: 15px;
       padding: 9px 16px;
 
       color: var(--white);
@@ -215,19 +245,18 @@
 
       border-radius: 999px;
 
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 900;
     }
 
     .phone-message {
-      min-height: 220px;
+      min-height: 230px;
+      padding: 22px;
 
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
-      padding: 22px;
 
       background: var(--white);
       border: 5px solid var(--black);
@@ -238,7 +267,7 @@
 
     .big-icon {
       margin-bottom: 10px;
-      font-size: 58px;
+      font-size: 62px;
       line-height: 1;
     }
 
@@ -246,6 +275,14 @@
       font-size: clamp(28px, 8vw, 42px);
       font-weight: 1000;
       line-height: 1.1;
+    }
+
+    .message-text {
+      margin-top: 14px;
+
+      font-size: 17px;
+      font-weight: 750;
+      line-height: 1.4;
     }
 
     .role-label {
@@ -257,7 +294,7 @@
     }
 
     .secret-word {
-      font-size: clamp(45px, 13vw, 72px);
+      font-size: clamp(44px, 13vw, 72px);
       font-weight: 1000;
       line-height: 1;
 
@@ -266,7 +303,7 @@
     }
 
     .poppy-role {
-      font-size: clamp(42px, 12vw, 68px);
+      font-size: clamp(40px, 12vw, 66px);
       font-weight: 1000;
       line-height: 1;
 
@@ -274,7 +311,7 @@
     }
 
     .secret-warning {
-      margin-top: 17px;
+      margin-top: 18px;
       padding: 11px 14px;
 
       color: var(--white);
@@ -288,14 +325,6 @@
 
     .secret-warning strong {
       color: var(--yellow);
-    }
-
-    .pass-message {
-      margin: 14px 0 20px;
-
-      font-size: 17px;
-      font-weight: 800;
-      line-height: 1.4;
     }
 
     .rules {
@@ -335,7 +364,7 @@
     }
 
     .discussion-heading {
-      font-size: clamp(30px, 8vw, 45px);
+      font-size: clamp(30px, 8vw, 44px);
       font-weight: 1000;
       color: var(--purple);
     }
@@ -355,7 +384,7 @@
       }
     }
 
-    .reveal-result {
+    .results-grid {
       display: grid;
       gap: 14px;
 
@@ -371,7 +400,7 @@
     }
 
     .result-label {
-      margin-bottom: 7px;
+      margin-bottom: 8px;
 
       font-size: 14px;
       font-weight: 1000;
@@ -401,7 +430,7 @@
       }
 
       .phone-message {
-        min-height: 205px;
+        min-height: 215px;
         padding: 18px 12px;
       }
     }
@@ -419,7 +448,7 @@
     <h1>WHO IS POPPY?</h1>
 
     <p class="subtitle">
-      One word. One imposter. One team decision.
+      One word. Two Poppies. One winning team.
     </p>
 
     <!-- SETUP SCREEN -->
@@ -428,7 +457,7 @@
       <div class="panel">
 
         <div class="panel-title">
-          HOW MANY PLAYERS ARE ON THIS TEAM?
+          HOW MANY PLAYERS ARE IN EACH TEAM?
         </div>
 
         <div class="player-selector">
@@ -460,10 +489,9 @@
 
         </div>
 
-        <p>
-          One player will secretly become
-          <strong>POPPY</strong>.
-        </p>
+        <div class="panel-text">
+          Team A and Team B will have the same number of players.
+        </div>
 
       </div>
 
@@ -476,14 +504,24 @@
       </button>
 
       <div class="rules">
-        Use <strong>one phone per team</strong>.<br>
-        Pass the phone from player to player.
+        The game creates exactly
+        <strong>one Poppy in each team</strong>.<br>
+        Everyone else receives the same secret word.
       </div>
 
     </section>
 
     <!-- PASS PHONE SCREEN -->
     <section id="passScreen" class="screen">
+
+      <div
+        id="teamBadge"
+        class="team-badge team-a"
+      >
+        TEAM A
+      </div>
+
+      <br>
 
       <div
         id="playerProgress"
@@ -502,7 +540,7 @@
           PASS THE PHONE
         </div>
 
-        <div class="pass-message">
+        <div class="message-text">
           Only the current player may look at the screen.
         </div>
 
@@ -518,13 +556,22 @@
 
       <div class="rules">
         <strong>LOOK → MEMORIZE → HIDE</strong><br>
-        Each player must tap only once.
+        Each player taps only once.
       </div>
 
     </section>
 
     <!-- ROLE SCREEN -->
     <section id="roleScreen" class="screen">
+
+      <div
+        id="roleTeamBadge"
+        class="team-badge team-a"
+      >
+        TEAM A
+      </div>
+
+      <br>
 
       <div
         id="rolePlayerProgress"
@@ -558,7 +605,7 @@
 
         <div class="secret-warning">
           <strong>TOP SECRET!</strong><br>
-          Do not show anyone.
+          Never reveal or confirm your role.
         </div>
 
       </div>
@@ -573,22 +620,55 @@
 
     </section>
 
-    <!-- CLUE SCREEN -->
-    <section id="clueScreen" class="screen">
+    <!-- TEAM A COMPLETE SCREEN -->
+    <section id="teamTransitionScreen" class="screen">
 
       <div class="phone-message">
 
         <div class="big-icon">
-          🗣️
+          ✅
         </div>
 
         <div class="ready-heading">
-          EVERYONE HAS A ROLE!
+          TEAM A COMPLETE!
         </div>
 
-        <div class="pass-message">
-          Take turns giving
-          <strong>ONE WORD ONLY</strong>
+        <div class="message-text">
+          Every Team A player has received a secret role.
+          <br><br>
+          Pass the phone to <strong>Team B</strong>.
+        </div>
+
+      </div>
+
+      <button
+        id="startTeamBButton"
+        class="blue-button"
+        type="button"
+      >
+        START TEAM B
+      </button>
+
+    </section>
+
+    <!-- ALL ROLES COMPLETE SCREEN -->
+    <section id="allRolesScreen" class="screen">
+
+      <div class="phone-message">
+
+        <div class="big-icon">
+          🎭
+        </div>
+
+        <div class="ready-heading">
+          ALL ROLES ARE SET!
+        </div>
+
+        <div class="message-text">
+          Put the phone down.
+          <br><br>
+          Everyone now gives
+          <strong>ONE WORD</strong>
           as a clue.
         </div>
 
@@ -603,8 +683,9 @@
       </button>
 
       <div class="rules">
-        No gestures · No spelling · No translations<br>
-        Then agree on <strong>one final vote</strong>.
+        Each team must identify
+        <strong>the Poppy in the opposing team</strong>.<br>
+        No gestures · No spelling · No translations
       </div>
 
     </section>
@@ -616,7 +697,7 @@
         id="discussionHeading"
         class="discussion-heading"
       >
-        WHO IS POPPY?
+        FIND THE OTHER TEAM'S POPPY!
       </div>
 
       <div
@@ -632,12 +713,12 @@
         class="red-button"
         type="button"
       >
-        LOCK IN YOUR VOTE
+        LOCK IN BOTH VOTES
       </button>
 
       <div class="rules">
-        Your team must agree on
-        <strong>one player</strong> before time runs out.
+        Team A chooses one suspect from Team B.<br>
+        Team B chooses one suspect from Team A.
       </div>
 
     </section>
@@ -648,15 +729,16 @@
       <div class="phone-message">
 
         <div class="big-icon">
-          👑
+          🔒
         </div>
 
         <div class="ready-heading">
-          FINAL ANSWER LOCKED!
+          VOTES LOCKED!
         </div>
 
-        <div class="pass-message">
-          Ready to reveal the truth?
+        <div class="message-text">
+          Both teams must announce their final suspect
+          before revealing the answer.
         </div>
 
       </div>
@@ -666,7 +748,7 @@
         class="purple-button"
         type="button"
       >
-        REVEAL POPPY
+        REVEAL BOTH POPPIES
       </button>
 
     </section>
@@ -674,24 +756,37 @@
     <!-- ANSWER SCREEN -->
     <section id="answerScreen" class="screen">
 
-      <div class="reveal-result">
+      <div class="results-grid">
 
         <div class="result-box">
           <div class="result-label">
-            POPPY WAS
+            TEAM A'S POPPY
           </div>
 
           <div
-            id="poppyResult"
+            id="teamAPoppyResult"
             class="result-value"
           >
-            PLAYER 3
+            PLAYER 2
           </div>
         </div>
 
         <div class="result-box">
           <div class="result-label">
-            THE SECRET WORD WAS
+            TEAM B'S POPPY
+          </div>
+
+          <div
+            id="teamBPoppyResult"
+            class="result-value"
+          >
+            PLAYER 4
+          </div>
+        </div>
+
+        <div class="result-box">
+          <div class="result-label">
+            THE SECRET WORD
           </div>
 
           <div
@@ -771,18 +866,49 @@
       "BASKETBALL",
       "SHARK",
       "RESTAURANT",
-      "TREASURE"
+      "TREASURE",
+      "LIBRARY",
+      "OCEAN",
+      "PRINCESS",
+      "VAMPIRE",
+      "COOKIE",
+      "MOTORCYCLE",
+      "MUSEUM",
+      "ALIEN",
+      "CROWN",
+      "PILLOW"
     ];
 
     const screens = {
-      setup: document.getElementById("setupScreen"),
-      pass: document.getElementById("passScreen"),
-      role: document.getElementById("roleScreen"),
-      clue: document.getElementById("clueScreen"),
+      setup:
+        document.getElementById("setupScreen"),
+
+      pass:
+        document.getElementById("passScreen"),
+
+      role:
+        document.getElementById("roleScreen"),
+
+      transition:
+        document.getElementById(
+          "teamTransitionScreen"
+        ),
+
+      allRoles:
+        document.getElementById(
+          "allRolesScreen"
+        ),
+
       discussion:
-        document.getElementById("discussionScreen"),
-      final: document.getElementById("finalScreen"),
-      answer: document.getElementById("answerScreen")
+        document.getElementById(
+          "discussionScreen"
+        ),
+
+      final:
+        document.getElementById("finalScreen"),
+
+      answer:
+        document.getElementById("answerScreen")
     };
 
     const playerCountElement =
@@ -795,16 +921,32 @@
       document.getElementById("plusButton");
 
     const createRoundButton =
-      document.getElementById("createRoundButton");
+      document.getElementById(
+        "createRoundButton"
+      );
+
+    const teamBadge =
+      document.getElementById("teamBadge");
+
+    const roleTeamBadge =
+      document.getElementById(
+        "roleTeamBadge"
+      );
 
     const playerProgressElement =
-      document.getElementById("playerProgress");
+      document.getElementById(
+        "playerProgress"
+      );
 
     const rolePlayerProgressElement =
-      document.getElementById("rolePlayerProgress");
+      document.getElementById(
+        "rolePlayerProgress"
+      );
 
     const revealRoleButton =
-      document.getElementById("revealRoleButton");
+      document.getElementById(
+        "revealRoleButton"
+      );
 
     const roleIconElement =
       document.getElementById("roleIcon");
@@ -816,45 +958,83 @@
       document.getElementById("roleValue");
 
     const hideRoleButton =
-      document.getElementById("hideRoleButton");
+      document.getElementById(
+        "hideRoleButton"
+      );
+
+    const startTeamBButton =
+      document.getElementById(
+        "startTeamBButton"
+      );
 
     const startDiscussionButton =
-      document.getElementById("startDiscussionButton");
+      document.getElementById(
+        "startDiscussionButton"
+      );
 
     const discussionHeadingElement =
-      document.getElementById("discussionHeading");
+      document.getElementById(
+        "discussionHeading"
+      );
 
     const discussionTimerElement =
-      document.getElementById("discussionTimer");
+      document.getElementById(
+        "discussionTimer"
+      );
 
     const finishDiscussionButton =
-      document.getElementById("finishDiscussionButton");
+      document.getElementById(
+        "finishDiscussionButton"
+      );
 
     const revealAnswerButton =
-      document.getElementById("revealAnswerButton");
+      document.getElementById(
+        "revealAnswerButton"
+      );
 
-    const poppyResultElement =
-      document.getElementById("poppyResult");
+    const teamAPoppyResultElement =
+      document.getElementById(
+        "teamAPoppyResult"
+      );
+
+    const teamBPoppyResultElement =
+      document.getElementById(
+        "teamBPoppyResult"
+      );
 
     const wordResultElement =
-      document.getElementById("wordResult");
+      document.getElementById(
+        "wordResult"
+      );
 
     const newRoundButton =
-      document.getElementById("newRoundButton");
+      document.getElementById(
+        "newRoundButton"
+      );
 
-    let playerCount = 4;
+    let playersPerTeam = 4;
+
+    let currentTeam = "A";
     let currentPlayerIndex = 0;
-    let poppyIndex = 0;
+
+    let teamAPoppyIndex = 0;
+    let teamBPoppyIndex = 0;
+
     let secretWord = "";
-    let discussionInterval = null;
     let previousWord = "";
 
-    function showScreen(screenName) {
-      Object.values(screens).forEach(function(screen) {
-        screen.classList.remove("active");
-      });
+    let discussionInterval = null;
 
-      screens[screenName].classList.add("active");
+    function showScreen(screenName) {
+      Object.values(screens).forEach(
+        function(screen) {
+          screen.classList.remove("active");
+        }
+      );
+
+      screens[screenName].classList.add(
+        "active"
+      );
 
       window.scrollTo({
         top: 0,
@@ -863,30 +1043,77 @@
     }
 
     function updatePlayerCount() {
-      playerCountElement.textContent = playerCount;
+      playerCountElement.textContent =
+        playersPerTeam;
 
-      minusButton.disabled = playerCount <= 3;
-      plusButton.disabled = playerCount >= 8;
+      minusButton.disabled =
+        playersPerTeam <= 3;
+
+      plusButton.disabled =
+        playersPerTeam >= 8;
     }
 
-    function getRandomNumber(maximum) {
-      return Math.floor(Math.random() * maximum);
+    function getRandomIndex(maximum) {
+      return Math.floor(
+        Math.random() * maximum
+      );
     }
 
     function chooseSecretWord() {
-      let chosenWord;
+      let selectedWord;
 
       do {
-        chosenWord =
-          wordBank[getRandomNumber(wordBank.length)];
+        selectedWord =
+          wordBank[
+            getRandomIndex(wordBank.length)
+          ];
       } while (
-        chosenWord === previousWord &&
+        selectedWord === previousWord &&
         wordBank.length > 1
       );
 
-      previousWord = chosenWord;
+      previousWord = selectedWord;
 
-      return chosenWord;
+      return selectedWord;
+    }
+
+    function setTeamVisuals() {
+      const teamText =
+        "TEAM " + currentTeam;
+
+      teamBadge.textContent =
+        teamText;
+
+      roleTeamBadge.textContent =
+        teamText;
+
+      teamBadge.classList.remove(
+        "team-a",
+        "team-b"
+      );
+
+      roleTeamBadge.classList.remove(
+        "team-a",
+        "team-b"
+      );
+
+      if (currentTeam === "A") {
+        teamBadge.classList.add(
+          "team-a"
+        );
+
+        roleTeamBadge.classList.add(
+          "team-a"
+        );
+      } else {
+        teamBadge.classList.add(
+          "team-b"
+        );
+
+        roleTeamBadge.classList.add(
+          "team-b"
+        );
+      }
     }
 
     function updatePlayerProgress() {
@@ -894,29 +1121,55 @@
         "PLAYER " +
         (currentPlayerIndex + 1) +
         " OF " +
-        playerCount;
+        playersPerTeam;
 
       playerProgressElement.textContent =
         progressText;
 
       rolePlayerProgressElement.textContent =
         progressText;
+
+      setTeamVisuals();
     }
 
     function createRound() {
-      secretWord = chooseSecretWord();
-      poppyIndex = getRandomNumber(playerCount);
+      secretWord =
+        chooseSecretWord();
+
+      teamAPoppyIndex =
+        getRandomIndex(playersPerTeam);
+
+      teamBPoppyIndex =
+        getRandomIndex(playersPerTeam);
+
+      currentTeam = "A";
       currentPlayerIndex = 0;
 
       updatePlayerProgress();
       showScreen("pass");
     }
 
+    function isCurrentPlayerPoppy() {
+      if (currentTeam === "A") {
+        return (
+          currentPlayerIndex ===
+          teamAPoppyIndex
+        );
+      }
+
+      return (
+        currentPlayerIndex ===
+        teamBPoppyIndex
+      );
+    }
+
     function revealCurrentRole() {
       updatePlayerProgress();
 
-      if (currentPlayerIndex === poppyIndex) {
-        roleIconElement.textContent = "👑";
+      if (isCurrentPlayerPoppy()) {
+        roleIconElement.textContent =
+          "👑";
+
         roleLabelElement.textContent =
           "YOUR SECRET ROLE";
 
@@ -926,7 +1179,9 @@
         roleValueElement.textContent =
           "YOU ARE POPPY!";
       } else {
-        roleIconElement.textContent = "🤫";
+        roleIconElement.textContent =
+          "🤫";
+
         roleLabelElement.textContent =
           "YOUR SECRET WORD";
 
@@ -941,14 +1196,30 @@
     }
 
     function hideCurrentRole() {
-      currentPlayerIndex += 1;
-
       roleValueElement.textContent = "";
 
-      if (currentPlayerIndex >= playerCount) {
-        showScreen("clue");
+      currentPlayerIndex += 1;
+
+      if (
+        currentPlayerIndex <
+        playersPerTeam
+      ) {
+        updatePlayerProgress();
+        showScreen("pass");
         return;
       }
+
+      if (currentTeam === "A") {
+        showScreen("transition");
+        return;
+      }
+
+      showScreen("allRoles");
+    }
+
+    function startTeamB() {
+      currentTeam = "B";
+      currentPlayerIndex = 0;
 
       updatePlayerProgress();
       showScreen("pass");
@@ -964,17 +1235,21 @@
       return (
         String(minutes).padStart(2, "0") +
         ":" +
-        String(remainingSeconds).padStart(2, "0")
+        String(
+          remainingSeconds
+        ).padStart(2, "0")
       );
     }
 
     function startDiscussion() {
-      clearInterval(discussionInterval);
+      clearInterval(
+        discussionInterval
+      );
 
       let timeLeft = 60;
 
       discussionHeadingElement.textContent =
-        "WHO IS POPPY?";
+        "FIND THE OTHER TEAM'S POPPY!";
 
       discussionHeadingElement.classList.remove(
         "time-up"
@@ -993,7 +1268,9 @@
             formatTime(timeLeft);
 
           if (timeLeft <= 0) {
-            clearInterval(discussionInterval);
+            clearInterval(
+              discussionInterval
+            );
 
             discussionHeadingElement.textContent =
               "TIME'S UP!";
@@ -1008,13 +1285,21 @@
     }
 
     function finishDiscussion() {
-      clearInterval(discussionInterval);
+      clearInterval(
+        discussionInterval
+      );
+
       showScreen("final");
     }
 
     function revealAnswer() {
-      poppyResultElement.textContent =
-        "PLAYER " + (poppyIndex + 1);
+      teamAPoppyResultElement.textContent =
+        "PLAYER " +
+        (teamAPoppyIndex + 1);
+
+      teamBPoppyResultElement.textContent =
+        "PLAYER " +
+        (teamBPoppyIndex + 1);
 
       wordResultElement.textContent =
         secretWord;
@@ -1023,20 +1308,27 @@
     }
 
     function resetGame() {
-      clearInterval(discussionInterval);
+      clearInterval(
+        discussionInterval
+      );
 
+      currentTeam = "A";
       currentPlayerIndex = 0;
+
+      teamAPoppyIndex = 0;
+      teamBPoppyIndex = 0;
+
       secretWord = "";
 
-      showScreen("setup");
       updatePlayerCount();
+      showScreen("setup");
     }
 
     minusButton.addEventListener(
       "click",
       function() {
-        if (playerCount > 3) {
-          playerCount -= 1;
+        if (playersPerTeam > 3) {
+          playersPerTeam -= 1;
           updatePlayerCount();
         }
       }
@@ -1045,8 +1337,8 @@
     plusButton.addEventListener(
       "click",
       function() {
-        if (playerCount < 8) {
-          playerCount += 1;
+        if (playersPerTeam < 8) {
+          playersPerTeam += 1;
           updatePlayerCount();
         }
       }
@@ -1065,6 +1357,11 @@
     hideRoleButton.addEventListener(
       "click",
       hideCurrentRole
+    );
+
+    startTeamBButton.addEventListener(
+      "click",
+      startTeamB
     );
 
     startDiscussionButton.addEventListener(
